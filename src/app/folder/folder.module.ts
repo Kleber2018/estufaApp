@@ -6,15 +6,17 @@ import { IonicModule } from '@ionic/angular';
 
 import { FolderPageRoutingModule } from './folder-routing.module';
 
-import { FolderPage } from './folder.page';
+import { FolderPage } from './folder/folder.page';
+import {Ng2GoogleChartsModule} from "ng2-google-charts";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    FolderPageRoutingModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        FolderPageRoutingModule,
+        Ng2GoogleChartsModule
+    ],
   declarations: [FolderPage]
 })
 export class FolderPageModule {}

@@ -18,4 +18,16 @@
     <strong class="capitalize">{{ folder }}</strong>
     <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
   </div>
+
+  <ion-content>
+    <ion-card class="welcome-card">
+      <ion-card-header>
+        <ion-card-title>Dados de Temperatura</ion-card-title>
+        <ion-card-subtitle>Ultimas 30 medições</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content *ngIf="pieChart">
+        <google-chart [data]="pieChart"></google-chart>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
 </ion-content>
