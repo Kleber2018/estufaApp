@@ -1,7 +1,7 @@
 {
   "name": "estufaApp",
   "version": "0.0.1",
-  "author": "Ionic Framework",
+  "author": "Kleber Santos",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
@@ -51,5 +51,5 @@
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
   },
-  "description": "An Ionic project"
+  "description": "App estufa"
 }

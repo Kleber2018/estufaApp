@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ folder }}</ion-title>
+   <!-- <ion-title>{{ folder }}</ion-title>-->
+    <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -20,14 +21,66 @@
   </div>
 
   <ion-content>
-    <ion-card class="welcome-card">
-      <ion-card-header>
-        <ion-card-title>Dados de Temperatura</ion-card-title>
-        <ion-card-subtitle>Ultimas 30 medições</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content *ngIf="pieChart">
-        <google-chart [data]="pieChart"></google-chart>
-      </ion-card-content>
-    </ion-card>
+
+    <ion-title style="margin: 8px; margin-top: 16px; padding: 0px">Gráfico de medições</ion-title>
+    <ion-row *ngIf="pieChart">
+      <google-chart [data]="pieChart"></google-chart>
+    </ion-row>
+
+
+    <ion-item>
+      <ion-label>Data inicial</ion-label>
+      <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Inicial"
+                    cancel-text="Voltar" done-text="Ok"
+                    value="{{dataInic}}" min="2020-10"
+                    monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
+                    [formControl]="formDataInic"
+                    (ionChange)="selecionadoData()"
+      ></ion-datetime>
+    </ion-item>
+
+    <ion-item style="margin-top: 4px; margin-block-end: 16px">
+      <ion-label>Data final</ion-label>
+        <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Final"
+                      cancel-text="Voltar" done-text="Ok"
+                      value="{{dataFinal}}" min="2020-10"
+                      [formControl]="formDataFinal"
+                      (ionChange)="selecionadoData()"
+                      monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
+        ></ion-datetime>
+    </ion-item>
+
+    <p style="opacity: 0.2">. </p>
+
+      <ion-row style="margin-top: 16px">
+        <ion-col size="5">
+          <p style="margin: 0px">Data-hora</p>
+        </ion-col>
+        <ion-col>
+          <p style="margin: 0px">Temperatura</p>
+        </ion-col>
+        <ion-col>
+          <p style="margin: 0px">Umidade</p>
+        </ion-col>
+      </ion-row>
+      <ion-list *ngFor="let medicao of medicoes" style="opacity: 0.6">
+        <ion-row>
+          <ion-col size="6">
+            <p style="margin: 0px">{{medicao.Data | date:'dd/MMM/yy - H:mm'}}</p>
+          </ion-col>
+          <ion-col>
+            <p style="margin: 0px">{{medicao.Temperatura}}</p>
+          </ion-col>
+          <ion-col>
+            <p style="margin: 0px">{{medicao.Umidade}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+
+      <ion-row class="ion-align-items-end" style="margin: 8px 0px">
+        <ion-col class="ion-align-self-end">
+          {{medicoes.length}} Medições
+        </ion-col>
+      </ion-row>
   </ion-content>
 </ion-content>

@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import {Ng2GoogleChartsModule} from "ng2-google-charts";
   imports: [
     BrowserModule,
     HttpClientModule,
+    ReactiveFormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     Ng2GoogleChartsModule
