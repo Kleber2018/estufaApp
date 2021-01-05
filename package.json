@@ -1,5 +1,5 @@
 {
-  "name": "estufaApp",
+  "name": "estufa app",
   "version": "0.0.1",
   "author": "Kleber Santos",
   "homepage": "https://ionicframework.com/",
@@ -26,6 +26,7 @@
     "ng2-google-charts": "^6.1.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
+    "web-animations-js": "^2.3.2",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

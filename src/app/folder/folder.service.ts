@@ -17,8 +17,15 @@ export class FolderService {
 
    // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
     let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
-    console.log(finalSplit[0], inicialSplit[0], param)
     return this.http.get<any>(this.apiURL+'/medicao',{headers: headers, params: param}).toPromise();
+  }
+
+
+  getAlertas(){
+    const headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+
+    return this.http.get<any>(this.apiURL+'/alertas',{headers: headers}).toPromise();
   }
 }
 

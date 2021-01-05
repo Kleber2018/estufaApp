@@ -52,6 +52,30 @@
 
     <p style="opacity: 0.2">. </p>
 
+    <ion-row>
+      <ion-col size="4">
+        <p style="margin: 0px">Data</p>
+      </ion-col>
+      <ion-col size="8">
+        <p style="margin: 0px">Alerta</p>
+      </ion-col>
+    </ion-row>
+    <div #alertaPiscando>
+      <ion-list *ngFor="let alerta of alertas" style="opacity: 0.6; padding: 0px" >
+        <ion-row >
+          <ion-col size="4">
+            <p style="margin: 0px">{{alerta.created | date:'dd/MMM/yy - H:mm'}}</p>
+          </ion-col>
+          <ion-col size="8">
+            <p style="margin: 0px">{{alerta.descricao}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </div>
+
+
+    <p style="opacity: 0.2">. </p>
+
       <ion-row style="margin-top: 16px">
         <ion-col size="5">
           <p style="margin: 0px">Data-hora</p>

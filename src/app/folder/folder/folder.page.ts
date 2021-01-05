@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {FolderService} from "../folder.service";
 import { GoogleChartInterface } from 'ng2-google-charts';
-import {forEachComment} from "tslint";
 import {FormControl} from "@angular/forms";
+
+import { Animation, AnimationController } from '@ionic/angular';
 
 @Component({
   selector: 'app-folder',
@@ -13,6 +14,7 @@ import {FormControl} from "@angular/forms";
 export class FolderPage implements OnInit {
   public folder: string;
   public medicoes: any = [];
+  public alertas: any = [];
 
 
   public pieChart: GoogleChartInterface;
@@ -35,8 +37,11 @@ export class FolderPage implements OnInit {
   public dataFinal = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate())
   public formDataFinal = new FormControl(this.dataFinal,[]);
 
+  @ViewChild('alertaPiscando', { read: ElementRef }) alertaPiscando: ElementRef;
+
   constructor(private activatedRoute: ActivatedRoute,
-              private folderService: FolderService) {
+              private folderService: FolderService,
+              private animationCtrl: AnimationController) {
 
     this.customPickerOptions = {
       buttons: [{
@@ -67,10 +72,43 @@ export class FolderPage implements OnInit {
     this.formDataInic = new FormControl(this.dataInic,[]);
 
     this.buscarMedicoes(this.dataInic, this.dataFinal)
+    this.buscarAlertas()
+
+    //loop para requisitar informações a cada 50000 (50 segundos)
+    setInterval(function() {
+          this.buscarMedicoes(this.dataInic, this.dataFinal)
+          this.buscarAlertas()
+    }.bind(this),
+        50000);
+
+
+    //para atrasar a inicialização da animação
+    setTimeout(() =>
+        {
+          this.startLoad()
+        },
+        1500);
+
   }
 
   ngOnInit() {
+  }
 
+  startLoad() {
+    console.log('animação')
+    //animação
+    const alertaAnimation: Animation = this.animationCtrl.create('alerta-animation')
+        .addElement(this.alertaPiscando.nativeElement)
+        .iterations(Infinity)
+        .duration(2700)
+        //.fromTo('opacity', '1', '0.5');
+        .keyframes([
+          { offset: 0, background: 'orange' },
+          { offset: 0.72, background: 'red' },
+          { offset: 1, background: 'var(--background)' }
+        ]);
+
+    alertaAnimation.play()
   }
 
   selecionadoData(){
@@ -106,6 +144,17 @@ export class FolderPage implements OnInit {
     };
 
     this.pieChart.dataTable = dadosGrafico
+  }
+
+  async buscarAlertas(){
+    this.alertas = await this.folderService.getAlertas().then(alertasRetorno => {
+      return alertasRetorno
+    }).catch(error => {
+      console.log('Retornou Erro de Alertas:', error);
+    })
+
+    console.log(this.alertas)
+
   }
 
   fucaoteste(){
