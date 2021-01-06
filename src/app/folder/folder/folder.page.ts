@@ -6,6 +6,8 @@ import {FormControl} from "@angular/forms";
 
 import { Animation, AnimationController } from '@ionic/angular';
 
+import { LoadingController } from '@ionic/angular';
+
 @Component({
   selector: 'app-folder',
   templateUrl: './folder.page.html',
@@ -37,11 +39,13 @@ export class FolderPage implements OnInit {
   public dataFinal = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate())
   public formDataFinal = new FormControl(this.dataFinal,[]);
 
+  public scanDispositivo = false
   @ViewChild('alertaPiscando', { read: ElementRef }) alertaPiscando: ElementRef;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private folderService: FolderService,
-              private animationCtrl: AnimationController) {
+                    private folderService: FolderService,
+                    private animationCtrl: AnimationController,
+                    public loadingController: LoadingController) {
 
     this.customPickerOptions = {
       buttons: [{
@@ -63,36 +67,54 @@ export class FolderPage implements OnInit {
         ? JSON.parse(localStorage.getItem('intervaloDias'))
         : null;
 
-    if(!intervaloDias){
+    if (!intervaloDias) {
       intervaloDias = 6
     }
     var d = new Date();
-    d.setDate(d.getDate()-intervaloDias);
-    this.dataInic = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()
-    this.formDataInic = new FormControl(this.dataInic,[]);
+    d.setDate(d.getDate() - intervaloDias);
+    this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+    this.formDataInic = new FormControl(this.dataInic, []);
 
-    this.buscarMedicoes(this.dataInic, this.dataFinal)
-    this.buscarAlertas()
-
-    //loop para requisitar informações a cada 50000 (50 segundos)
-    setInterval(function() {
-          this.buscarMedicoes(this.dataInic, this.dataFinal)
-          this.buscarAlertas()
-    }.bind(this),
-        50000);
-
-
-    //para atrasar a inicialização da animação
-    setTimeout(() =>
-        {
-          this.startLoad()
-        },
-        1500);
+    this.inicializando()
 
   }
 
   ngOnInit() {
   }
+
+  async inicializando() {
+    const apiURL = localStorage.getItem('ipraspberry')
+
+    console.log('api', apiURL)
+    if (!apiURL) {
+      this.scanDispositivo = true
+      this.presentLoading()
+      const r = await this.folderService.scanDispositivo()
+      console.log(r)
+      if(r == 1){
+        this.scanDispositivo = false
+        this.inicializando()
+      }
+    } else {
+      this.buscarMedicoes(this.dataInic, this.dataFinal)
+      this.buscarAlertas()
+
+      //loop para requisitar informações a cada 50000 (50 segundos)
+      setInterval(function () {
+            this.buscarMedicoes(this.dataInic, this.dataFinal)
+            this.buscarAlertas()
+          }.bind(this),
+          50000);
+
+      //para atrasar a inicialização da animação
+      setTimeout(() => {
+            this.startLoad()
+          },
+          1500);
+    }
+
+  }
+
 
   startLoad() {
     console.log('animação')
@@ -133,7 +155,6 @@ export class FolderPage implements OnInit {
 //      console.log(new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes())
     })
 
-
     this.pieChart = {
       chartType: 'LineChart',
       dataTable: dadosGrafico,
@@ -152,15 +173,32 @@ export class FolderPage implements OnInit {
     }).catch(error => {
       console.log('Retornou Erro de Alertas:', error);
     })
-
     console.log(this.alertas)
-
   }
 
-  fucaoteste(){
-    console.log('testando')
+  silenciarAlertas(){
+
+    this.folderService.silenciarAlertas().then(r => {
+      console.log(r)
+    }).catch(error => {
+      console.log('Retornou Erro de silenciar alertas:', error);
+    })
+    this.buscarAlertas()
   }
 
+  async presentLoading() {
+    while (this.scanDispositivo){
+      const loading = await this.loadingController.create({
+        cssClass: 'my-custom-class',
+        message: 'Procurando dispositivo na rede...',
+        duration: 10000
+      });
+      await loading.present();
 
+      const { role, data } = await loading.onDidDismiss();
+      console.log('Loading dismissed!');
+    }
+
+  }
 
 }

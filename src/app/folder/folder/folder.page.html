@@ -4,11 +4,13 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
    <!-- <ion-title>{{ folder }}</ion-title>-->
-    <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button>
+    <!-- <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button> -->
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+
+
+<ion-content [fullscreen]="true" *ngIf="medicoes">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">{{ folder }}</ion-title>
@@ -60,6 +62,9 @@
         <p style="margin: 0px">Alerta</p>
       </ion-col>
     </ion-row>
+    <div *ngIf="alertas.length == 0">
+      <p style="margin: 8px">Nenhum alerta</p>
+    </div>
     <div #alertaPiscando>
       <ion-list *ngFor="let alerta of alertas" style="opacity: 0.6; padding: 0px" >
         <ion-row >
@@ -72,7 +77,7 @@
         </ion-row>
       </ion-list>
     </div>
-
+    <ion-button color="warning" (click)="silenciarAlertas()" *ngIf="alertas.length !== 0">Limpar Alertas</ion-button>
 
     <p style="opacity: 0.2">. </p>
 
