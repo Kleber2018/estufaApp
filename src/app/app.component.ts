@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
       title: 'Alertas',
       url: '/folder/Alertas',
       icon: 'archive'
-    }
+    },
     // {
     //   title: 'Favorites',
     //   url: '/folder/Favorites',
@@ -37,11 +37,11 @@ export class AppComponent implements OnInit {
     //   url: '/folder/Trash',
     //   icon: 'trash'
     // },
-    // {
-    //   title: 'Spam',
-    //   url: '/folder/Spam',
-    //   icon: 'warning'
-    // }
+     {
+       title: 'Configurações',
+       url: '/config',
+       icon: 'warning'
+     }
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
