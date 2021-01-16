@@ -49,4 +49,13 @@ export class ConfigService {
     return this.http.get<any>(this.apiURL+'/apiconfig',{headers: headers}).toPromise();
   }
 
+  updateConfig(configuracao: any){
+    const headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+
+    //let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
+
+    return this.http.post<any>(this.apiURL+'/apisalvarconfig',{headers: headers,  params: configuracao}).toPromise();
+  }
+
 }

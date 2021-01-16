@@ -51,6 +51,17 @@ export class ConfigComponent implements OnInit {
 
   submitConfig(){
     console.log(this.formConfig.value)
+      this.configService.updateConfig(this.formConfig.value).then(r => {
+          if(r){
+              if(r.retorno == 'salvo'){
+                  alert(r.retorno)
+              } else {
+                  alert('erro ao salvar: ' + r.retorno)
+              }
+          } else {
+              alert('erro ao salvar: ' + r.retorno)
+          }
+      })
   }
 
 }
