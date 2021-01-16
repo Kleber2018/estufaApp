@@ -7,7 +7,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
   providedIn: 'root'
 })
 export class FolderService {
-  public  apiURL = 'http://192.168.0.105:5000'
+ // public  apiURL = 'http://192.168.0.105:5000'
+  public  apiURL = 'http://127.0.0.1:5000'
   constructor(private http : HttpClient,
               //private networkInterface: NetworkInterface
   ) {
@@ -48,7 +49,7 @@ export class FolderService {
 
 
   getMedicoes(inicial, final){
-    this.apiURL = localStorage.getItem('ipraspberry')
+   // this.apiURL = localStorage.getItem('ipraspberry')
 
     if(!this.apiURL){
       this.scanDispositivo();
@@ -59,9 +60,26 @@ export class FolderService {
     const inicialSplit = inicial.split('T')
     const finalSplit = final.split('T')
 
+    //this.ocultarMedicoes([2,4])
+
    // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
     let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
     return this.http.get<any>(this.apiURL+'/medicao',{headers: headers, params: param}).toPromise();
+  }
+
+
+  ocultarMedicoes(ids){
+    // this.apiURL = localStorage.getItem('ipraspberry')
+
+    if(!this.apiURL){
+      this.scanDispositivo();
+    }
+
+    const headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+    // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
+    let param: any = {id_medicao: ids};
+    return this.http.post<any>(this.apiURL+'/apiocultarmedicoes',{headers: headers, params: param}).toPromise();
   }
 
 
