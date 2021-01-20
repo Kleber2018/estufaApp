@@ -8,6 +8,11 @@ import { Animation, AnimationController } from '@ionic/angular';
 
 import { LoadingController } from '@ionic/angular';
 
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
+import { Platform } from '@ionic/angular';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+
 @Component({
   selector: 'app-folder',
   templateUrl: './folder.page.html',
@@ -45,7 +50,11 @@ export class FolderPage implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
                     private folderService: FolderService,
                     private animationCtrl: AnimationController,
-                    public loadingController: LoadingController) {
+                    public loadingController: LoadingController,
+                    private nativeAudio: NativeAudio,
+                    private vibration: Vibration,
+                    private platform: Platform,
+                    private backgroundMode: BackgroundMode) {
 
     this.customPickerOptions = {
       buttons: [{
@@ -74,6 +83,41 @@ export class FolderPage implements OnInit {
     d.setDate(d.getDate() - intervaloDias);
     this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
     this.formDataInic = new FormControl(this.dataInic, []);
+
+     // set status bar to white
+      //this.statusBar.backgroundColorByHexString('#339933');
+
+       // The Native Audio plugin can only be called once the platform is ready
+       this.platform.ready().then(() => { 
+        console.log("platform ready");
+        //alert('platform')      
+        this.nativeAudio.preloadSimple('uniqueId1', 'assets/intro.mp3')
+        this.nativeAudio.preloadComplex('uniqueId2', 'assets/intro.mp3', 1, 1, 0)
+
+      //  this.nativeAudio.play('uniqueId1')
+
+        /*
+        // This is used to unload the track. It's useful if you're experimenting with track locations
+        this.nativeAudio.unload('trackID').then(function() {
+            console.log("unloaded audio!");
+            alert('loaded')
+        }, function(err) {
+            console.log("couldn't unload audio... " + err);
+            alert("couldn't unload audio..." + err)
+        });
+
+        // 'trackID' can be anything
+        this.nativeAudio.preloadComplex('trackID', 'assets/intro.mp3', 1, 1, 0).then(function() {
+            console.log("audio loaded!");
+            alert('loaded')
+        }, function(err) {
+            console.log("audio failed: " + err);
+            alert("audio2 failed: " + err)
+        });
+        */
+        
+      });
+
 
     this.inicializando()
 
@@ -167,7 +211,12 @@ export class FolderPage implements OnInit {
     this.pieChart.dataTable = dadosGrafico
   }
 
+
   async buscarAlertas(){
+    this.backgroundMode.enable();
+
+
+    
     this.alertas = await this.folderService.getAlertas().then(alertasRetorno => {
       return alertasRetorno
     }).catch(error => {
@@ -176,8 +225,8 @@ export class FolderPage implements OnInit {
     console.log(this.alertas)
   }
 
-  silenciarAlertas(){
 
+  silenciarAlertas(){
     this.folderService.silenciarAlertas().then(r => {
       console.log(r)
     }).catch(error => {
@@ -198,6 +247,31 @@ export class FolderPage implements OnInit {
       const { role, data } = await loading.onDidDismiss();
       console.log('Loading dismissed!');
     }
+  }
+
+
+  executarNative(){
+    alert('executado')
+   // this.vibration.vibrate([2000,2000,2000]);
+   
+    // can optionally pass a callback to be called when the file is done playing
+
+    this.nativeAudio.loop('uniqueId2')
+    //this.nativeAudio.play('uniqueId1', () => console.log('uniqueId1 is done playing'));
+    this.vibration.vibrate([2000,2000,2000]);
+/*
+    this.nativeAudio.play('trackID').then(function() {
+      console.log("playing audio!");
+      alert('play')
+    }, function(err) {
+        console.log("error playing audio: " + err);
+    });
+*/
+  }
+
+  pararNative(){
+    this.nativeAudio.stop('uniqueId2')
+   // this.nativeAudio.unload('uniqueId1')
 
   }
 
