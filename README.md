@@ -5,6 +5,10 @@ App em Ionic para monitorar os dados de Temperatura e umidade da estufa
 CONFIGURANDO AS VARIÁVEIS DE AMBIENTE
 http://www.tiagoporto.com/blog/tutorial-de-configuracao-do-ambiente-ionic-android-no-windows/
 
+## BANCO DE DADOS
+
+PADRÃO: 2020-12-15 23:10:34
+
 
 remover a plataforma
 ionic cordova platform rm android

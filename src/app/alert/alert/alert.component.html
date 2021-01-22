@@ -1,0 +1,70 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <!-- <ion-title>{{ folder }}</ion-title>-->
+    <!-- <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button> -->
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content [fullscreen]="true" *ngIf="alertas">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Histórico de alertas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item>
+      <ion-label>Data inicial</ion-label>
+      <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Inicial"
+                    cancel-text="Voltar" done-text="Ok"
+                    value="{{dataInic}}" min="2020-10"
+                    monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
+                    [formControl]="formDataInic"
+                    (ionChange)="selecionadoData()"
+      ></ion-datetime>
+    </ion-item>
+
+    <ion-item style="margin-top: 4px; margin-block-end: 16px">
+      <ion-label>Data final</ion-label>
+      <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Final"
+                    cancel-text="Voltar" done-text="Ok"
+                    value="{{dataFinal}}" min="2020-10"
+                    [formControl]="formDataFinal"
+                    (ionChange)="selecionadoData()"
+                    monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
+      ></ion-datetime>
+    </ion-item>
+
+    <p style="opacity: 0.2">. </p>
+
+    <ion-row>
+      <ion-col size="4">
+        <p style="margin: 0px">Data</p>
+      </ion-col>
+      <ion-col size="8">
+        <p style="margin: 0px">Alerta</p>
+      </ion-col>
+    </ion-row>
+    <div *ngIf="alertas.length == 0">
+      <p style="margin: 8px">Nenhum alerta</p>
+    </div>
+    <div >
+      <ion-list *ngFor="let alerta of alertas" style="opacity: 0.6; padding: 0px" >
+        <ion-row >
+          <ion-col size="4">
+            <p style="margin: 0px">{{alerta.created | date:'dd/MMM/yy - H:mm'}}</p>
+          </ion-col>
+          <ion-col size="8">
+            <p style="margin: 0px">{{alerta.descricao}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </div>
+
+  </ion-content>
+</ion-content>

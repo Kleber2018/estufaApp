@@ -137,6 +137,10 @@ export class FolderPage implements OnInit {
     this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
   }
 
+  ocultarMedicao(){
+    this.folderService.ocultarMedicao(11)
+  }
+
   async buscarMedicoes(dataI, dataF) {
     this.medicoes = await this.folderService.getMedicoes(dataI, dataF).then(medicoesRetorno => {
       return medicoesRetorno
