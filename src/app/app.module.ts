@@ -11,6 +11,9 @@ import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {ReactiveFormsModule} from "@angular/forms";
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 
 
@@ -27,8 +30,11 @@ import {ReactiveFormsModule} from "@angular/forms";
   ],
   providers: [
     StatusBar,
+    NativeAudio,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Vibration,
+    BackgroundMode
   ],
   bootstrap: [AppComponent]
 })

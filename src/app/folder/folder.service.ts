@@ -7,8 +7,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
   providedIn: 'root'
 })
 export class FolderService {
- // public  apiURL = 'http://192.168.0.105:5000'
-  public  apiURL = 'http://127.0.0.1:5000'
+  public  apiURL = 'http://192.168.0.105:5000'
+  // public  apiURL = 'http://127.0.0.1:5000'
   constructor(private http : HttpClient,
               //private networkInterface: NetworkInterface
   ) {

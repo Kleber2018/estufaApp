@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 @Component({
@@ -50,20 +51,28 @@ export class AppComponent implements OnInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
   ) {
+      // let status bar overlay webview
+      this.statusBar.overlaysWebView(false);
+
+      // set status bar to white
+      //this.statusBar.backgroundColorByHexString('#339933');
+
     this.initializeApp();
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
-  }
-
-  ngOnInit() {
+  ngOnInit() {    
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+  }
+
+  initializeApp() {
+    /*
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+    });
+    */
   }
 }
