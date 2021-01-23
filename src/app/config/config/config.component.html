@@ -10,55 +10,87 @@
 
 
 
-<ion-content [fullscreen]="true" *ngIf="formConfig">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Configurações</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true">
+  <ion-content  *ngIf="formConfig">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">Configurações alertas</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content [formGroup]="formConfig">
 
-  <ion-content [formGroup]="formConfig">
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-text>Intervalo de medicao em segundos (1 min: 60)</ion-text>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">Medir a cada: </ion-label>
+        <ion-input formControlName="intervalo_seconds" type="number"></ion-input>
+      </ion-item>
 
-    <ion-item-divider style="margin: 8px 0px">
-      <ion-text>Intervalo de medicao em segundos (1 min: 60)</ion-text>
-    </ion-item-divider>
-    <ion-item>
-      <ion-label position="floating">Medir a cada: </ion-label>
-      <ion-input formControlName="intervalo_seconds" type="number"></ion-input>
-    </ion-item>
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-text>Configuração de alertas</ion-text>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">Temperatura Mínima:</ion-label>
+        <ion-input formControlName="temp_min" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" >Temperatura Máxima:</ion-label>
+        <ion-input formControlName="temp_max"  type="number"></ion-input>
+      </ion-item>
+      <ion-item-divider ></ion-item-divider>
+      <ion-item>
+        <ion-label position="floating"  >Umidade Mínima:</ion-label>
+        <ion-input formControlName="umid_min"  type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" >Umidade Máxima:</ion-label>
+        <ion-input formControlName="umid_max" type="number"></ion-input>
+      </ion-item>
+      <ion-item-divider ></ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">Observação:</ion-label>
+        <ion-textarea formControlName="obs"></ion-textarea>
+      </ion-item>
 
-    <ion-item-divider style="margin: 8px 0px">
-      <ion-text>Configuração de alertas</ion-text>
-    </ion-item-divider>
-    <ion-item>
-      <ion-label position="floating">Temperatura Mínima:</ion-label>
-      <ion-input formControlName="temp_min" type="number"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating" >Temperatura Máxima:</ion-label>
-      <ion-input formControlName="temp_max"  type="number"></ion-input>
-    </ion-item>
-    <ion-item-divider ></ion-item-divider>
-    <ion-item>
-      <ion-label position="floating"  >Umidade Mínima:</ion-label>
-      <ion-input formControlName="umid_min"  type="number"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating" >Umidade Máxima:</ion-label>
-      <ion-input formControlName="umid_max" type="number"></ion-input>
-    </ion-item>
-    <ion-item-divider ></ion-item-divider>
-    <ion-item>
-      <ion-label position="floating">Observação:</ion-label>
-      <ion-textarea formControlName="obs"></ion-textarea>
-    </ion-item>
-
-    <ion-row class="ion-justify-content-center" style="margin: 8px">
-      <ion-col size="3">
-        <ion-button color="warning" type="submit" (click)="submitConfig()" [disabled]="(!formConfig.valid)">Salvar</ion-button>
-      </ion-col>
-    </ion-row>
-
+      <ion-row class="ion-justify-content-center" style="margin: 8px">
+        <ion-col size="3">
+          <ion-button color="warning" type="submit" (click)="submitConfig()" [disabled]="(!formConfig.valid)">Salvar</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-content>
   </ion-content>
+
+  <ion-content  *ngIf="formIP">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">Endereço IP do Medidor</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [formGroup]="formIP">
+
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-text>IP do medidor Raspberry na rede</ion-text>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">IP: </ion-label>
+        <ion-input formControlName="ip" type="text"></ion-input>
+      </ion-item>
+
+      <ion-row class="ion-justify-content-center" style="margin: 8px">
+        <ion-col size="3">
+          <ion-button color="warning" type="submit" (click)="submitIP()" [disabled]="(!formIP.valid)">Salvar</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center" style="margin: 8px">
+        <ion-col size="3">
+          <ion-button color="warning" type="submit" (click)="scanRede()" [disabled]="this.apiURL" >Scan Rede</ion-button>
+        </ion-col>
+      </ion-row>
+
+    </ion-content>
+  </ion-content>
+
 
 </ion-content>

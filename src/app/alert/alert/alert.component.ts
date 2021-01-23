@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AlertService} from "../alert.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-config',
@@ -18,9 +19,18 @@ export class AlertComponent implements OnInit {
 
     constructor(
       private formBuilder: FormBuilder,
-      private alertService: AlertService
+      private alertService: AlertService,
+      private router: Router
     ) {
-      this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+        const apiURL = localStorage.getItem('ipraspberry')
+
+
+        if (!apiURL) {
+            this.router.navigate(['/config']);
+        } else {
+            this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+        }
+
     }
 
 

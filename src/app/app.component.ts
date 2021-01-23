@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Alertas',
-      url: '/folder/Alertas',
+      url: '/alertas',
       icon: 'archive'
     },
     // {

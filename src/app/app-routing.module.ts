@@ -16,7 +16,7 @@ const routes: Routes = [
     loadChildren: () => import('./config/config.module').then( m => m.ConfigModule)
   },
   {
-    path: 'alert',
+    path: 'alertas',
     loadChildren: () => import('./alert/alert.module').then( m => m.AlertModule)
   }
 ];

@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FolderService} from "../folder.service";
 import { GoogleChartInterface } from 'ng2-google-charts';
 import {FormControl} from "@angular/forms";
@@ -9,7 +9,7 @@ import { Animation, AnimationController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
-import { Vibration } from '@ionic-native/vibration/ngx';
+//import { Vibration } from '@ionic-native/vibration/ngx';
 import { Platform } from '@ionic/angular';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
@@ -44,17 +44,17 @@ export class FolderPage implements OnInit {
   public dataFinal = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate())
   public formDataFinal = new FormControl(this.dataFinal,[]);
 
-  public scanDispositivo = false
+
   @ViewChild('alertaPiscando', { read: ElementRef }) alertaPiscando: ElementRef;
 
   constructor(private activatedRoute: ActivatedRoute,
                     private folderService: FolderService,
                     private animationCtrl: AnimationController,
-                    public loadingController: LoadingController,
                     private nativeAudio: NativeAudio,
-                    private vibration: Vibration,
+                    //private vibration: Vibration,
                     private platform: Platform,
-                    private backgroundMode: BackgroundMode) {
+                    private backgroundMode: BackgroundMode,
+                    private router: Router) {
 
     this.customPickerOptions = {
       buttons: [{
@@ -129,16 +129,9 @@ export class FolderPage implements OnInit {
   async inicializando() {
     const apiURL = localStorage.getItem('ipraspberry')
 
-    console.log('api', apiURL)
+
     if (!apiURL) {
-      this.scanDispositivo = true
-      this.presentLoading()
-      const r = await this.folderService.scanDispositivo()
-      console.log(r)
-      if(r == 1){
-        this.scanDispositivo = false
-        this.inicializando()
-      }
+      this.router.navigate(['/config']);
     } else {
       this.buscarMedicoes(this.dataInic, this.dataFinal)
       this.buscarAlertas()
@@ -239,20 +232,6 @@ export class FolderPage implements OnInit {
     this.buscarAlertas()
   }
 
-  async presentLoading() {
-    while (this.scanDispositivo){
-      const loading = await this.loadingController.create({
-        cssClass: 'my-custom-class',
-        message: 'Procurando dispositivo na rede...',
-        duration: 10000
-      });
-      await loading.present();
-
-      const { role, data } = await loading.onDidDismiss();
-      console.log('Loading dismissed!');
-    }
-  }
-
 
   executarNative(){
     alert('executado')
@@ -262,7 +241,7 @@ export class FolderPage implements OnInit {
 
     this.nativeAudio.loop('uniqueId2')
     //this.nativeAudio.play('uniqueId1', () => console.log('uniqueId1 is done playing'));
-    this.vibration.vibrate([2000,2000,2000]);
+    //this.vibration.vibrate([2000,2000,2000]);
 /*
     this.nativeAudio.play('trackID').then(function() {
       console.log("playing audio!");
