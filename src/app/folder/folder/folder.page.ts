@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FolderService} from "../folder.service";
 import { GoogleChartInterface } from 'ng2-google-charts';
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 
 import { Animation, AnimationController } from '@ionic/angular';
 
@@ -12,6 +12,7 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
 //import { Vibration } from '@ionic-native/vibration/ngx';
 import { Platform } from '@ionic/angular';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import {ConfigService} from "../../config/config.service";
 
 @Component({
   selector: 'app-folder',
@@ -23,6 +24,15 @@ export class FolderPage implements OnInit {
   public medicoes: any = [];
   public alertas: any = [];
 
+  public config: any;
+
+  public medicao = {
+    temp: 0,
+    temp_status: '',//baixo, alto
+    umid: 0,
+    umid_status: '' //baixo, alto
+  }
+w
 
   public pieChart: GoogleChartInterface;
   /*= {
@@ -54,7 +64,8 @@ export class FolderPage implements OnInit {
                     //private vibration: Vibration,
                     private platform: Platform,
                     private backgroundMode: BackgroundMode,
-                    private router: Router) {
+                    private router: Router,
+                    private configService: ConfigService) {
 
     this.customPickerOptions = {
       buttons: [{
@@ -136,6 +147,7 @@ export class FolderPage implements OnInit {
       this.buscarMedicoes(this.dataInic, this.dataFinal)
       this.buscarAlertas()
 
+
       //loop para requisitar informações a cada 50000 (50 segundos)
       setInterval(function () {
             this.buscarMedicoes(this.dataInic, this.dataFinal)
@@ -187,14 +199,24 @@ export class FolderPage implements OnInit {
     var dadosGrafico = [['Data', 'Umidade', 'Temperatura']]
     console.log(this.medicoes)
 
-    this.medicoes.sort((a, b) => {
-      return +a.id - +b.id;
-    });
+    if (this.medicoes){
+      this.buscaConfig()
+      this.medicoes.sort((a, b) => {
+        return +a.id - +b.id;
+      });
+      console.log('primeiro', this.medicoes[0])
 
-    this.medicoes.forEach(medicao => {
-      dadosGrafico.push([new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes(), medicao.Umidade, medicao.Temperatura])
+      this.buildViewMedicao(this.medicoes[0])
+
+      this.medicoes.forEach(medicao => {
+        dadosGrafico.push([new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes(), medicao.Umidade, medicao.Temperatura])
 //      console.log(new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes())
-    })
+      })
+    } else {
+      dadosGrafico.push([new Date().getHours() + ":"+ new Date().getMinutes(), '50', '25'])
+      dadosGrafico.push([new Date().getHours() + ":"+ new Date().getMinutes(), '55', '20'])
+      dadosGrafico.push([new Date().getHours() + ":"+ new Date().getMinutes(), '58', '23'])
+    }
 
     this.pieChart = {
       chartType: 'LineChart',
@@ -208,6 +230,56 @@ export class FolderPage implements OnInit {
     this.pieChart.dataTable = dadosGrafico
   }
 
+  buildViewMedicao(med: any){
+
+    if(this.config){
+      console.log('configuracao', this.config)
+      console.log('medicao', this.medicao)
+      this.medicao.temp = med.Temperatura
+      this.medicao.umid = med.Umidade
+
+      if(med.Temperatura > this.config.temp_max){
+        this.medicao.temp_status = "alto"
+      } else if(med.Temperatura < this.config.temp_min ){
+        this.medicao.temp_status = "baixo"
+      } else {
+        this.medicao.temp_status = ""
+      }
+
+      if(med.Umidade > this.config.umid_max){
+        this.medicao.umid_status = "alto"
+      } else if(med.Umidade < this.config.umid_min ){
+        this.medicao.umid_status = "baixo"
+      } else {
+        this.medicao.umid_status = ""
+      }
+    }
+    console.log(this.medicao)
+  }
+
+
+  buscaConfig(){
+    this.config = JSON.parse(localStorage.getItem('configraspberry'))
+    if(!this.config){
+      this.configService.getConfig().then(configRetorno => {
+        if(configRetorno){
+          if(Array.isArray(configRetorno)){
+            this.config = configRetorno[0];
+          } else {
+            this.config = configRetorno;
+          }
+          localStorage.setItem('configraspberry', JSON.stringify(this.config))
+        }
+      }).catch(error => {
+            if (error.error){
+              console.log('Retornou Erro:',error.error);
+            } else {
+              console.log('Retornou Erro:',error);
+            }
+          }
+      )
+    }
+  }
 
   async buscarAlertas(){
     this.backgroundMode.enable();

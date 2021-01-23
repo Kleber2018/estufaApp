@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ConfigService} from "../config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {LoadingController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-config',
@@ -18,6 +19,7 @@ export class ConfigComponent implements OnInit {
       private formBuilder: FormBuilder,
       private configService: ConfigService,
       public loadingController: LoadingController,
+      private router: Router
   ) {
       this.inicializar()
   }
@@ -43,18 +45,18 @@ export class ConfigComponent implements OnInit {
       })
   }
 
-
   //carregando com dados nulos para criar uma nova ocorrência
   private buildFormConfig(): void {
-      this.configService.getConfig().then(ocurrenceRetorno => {
-          console.log('Retornou /config', ocurrenceRetorno);
-          if(ocurrenceRetorno){
-              console.log('dentro do if')
-              if(Array.isArray(ocurrenceRetorno)){
-                  this.config = ocurrenceRetorno[0];
+      this.configService.getConfig().then(configRetorno => {
+          console.log('Retornou /config', configRetorno);
+          if(configRetorno){
+              if(Array.isArray(configRetorno)){
+                  this.config = configRetorno[0];
               } else {
-                  this.config = ocurrenceRetorno;
+                  this.config = configRetorno;
               }
+
+              localStorage.setItem('configraspberry', JSON.stringify(this.config))
 
               this.formConfig = this.formBuilder.group({
                   intervalo_seconds: [this.config.intervalo_seconds, [Validators.required]],
@@ -76,7 +78,7 @@ export class ConfigComponent implements OnInit {
       )
   }
 
-  submitConfig(){
+    submitConfig(){
     console.log(this.formConfig.value)
       this.configService.updateConfig(this.formConfig.value).then(r => {
           if(r){
@@ -89,12 +91,16 @@ export class ConfigComponent implements OnInit {
               alert('erro ao salvar: ' + r.retorno)
           }
       })
-  }
+    }
 
     submitIP(){
-      //'http://'+retorno.retorno+':5000'
-        localStorage.setItem('ipraspberry', this.formIP.value.ip)
-      console.log('submitIP', this.formIP.value)
+        //'http://'+retorno.retorno+':5000'
+        var splitted = this.formIP.value.ip.split(".");
+        //verifica se é um número
+        if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
+            localStorage.setItem('ipraspberry', this.formIP.value.ip)
+            this.router.navigate(['/folder/Inbox']);
+        }
     }
 
     async presentLoading() {
