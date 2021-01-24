@@ -56,6 +56,8 @@ w
 
 
   @ViewChild('alertaPiscando', { read: ElementRef }) alertaPiscando: ElementRef;
+  @ViewChild('umidAnimation', { read: ElementRef }) umidAnimation: ElementRef;
+  @ViewChild('tempAnimation', { read: ElementRef }) tempAnimation: ElementRef;
 
   constructor(private activatedRoute: ActivatedRoute,
                     private folderService: FolderService,
@@ -146,27 +148,96 @@ w
     } else {
       this.buscarMedicoes(this.dataInic, this.dataFinal)
       this.buscarAlertas()
+      this.buscarMedicao()
 
 
-      //loop para requisitar informações a cada 50000 (50 segundos)
+
+      //loop para requisitar informações a cada 60000 (60 segundos)
+      var vr = 0
       setInterval(function () {
-            this.buscarMedicoes(this.dataInic, this.dataFinal)
+            this.buscarMedicao()
             this.buscarAlertas()
+
+            // para que o array de medição não seja atualizado com tanta frequencia
+            if(vr === 0){
+              this.buscarMedicoes(this.dataInic, this.dataFinal)
+            } else if (vr === 5){
+              vr = 0
+            }
+            vr++
           }.bind(this),
-          50000);
+          60000);
 
       //para atrasar a inicialização da animação
       setTimeout(() => {
             this.startLoad()
+            this.startAnimaTempUmid()
           },
           1500);
     }
 
   }
 
+  startAnimaTempUmid(){
+
+    //animação
+    if(this.medicao.temp_status == 'alto'){
+      const temperaturaAnimation: Animation = this.animationCtrl.create('temp-animation')
+          .addElement(this.tempAnimation.nativeElement)
+          .iterations(Infinity)
+          .duration(2700)
+          //.fromTo('opacity', '1', '0.5');
+          .keyframes([
+            { offset: 0, background: 'orange' },
+            { offset: 0.72, background: 'red' },
+            { offset: 1, background: 'var(--background)' }
+          ]);
+      temperaturaAnimation.play()
+    } else if (this.medicao.temp_status == 'baixo'){
+      const temperaturaAnimation: Animation = this.animationCtrl.create('temp-animation')
+          .addElement(this.tempAnimation.nativeElement)
+          .iterations(Infinity)
+          .duration(2700)
+          //.fromTo('opacity', '1', '0.5');
+          .keyframes([
+            { offset: 0, background: 'blue' },
+            { offset: 0.72, background: 'purple' },
+            { offset: 1, background: 'var(--background)' }
+          ]);
+      temperaturaAnimation.play()
+    }
+
+    if(this.medicao.umid_status == 'alto'){
+      const umidadeAnimation: Animation = this.animationCtrl.create('umid-animation')
+          .addElement(this.umidAnimation.nativeElement)
+          .iterations(Infinity)
+          .duration(2700)
+          //.fromTo('opacity', '1', '0.5');
+          .keyframes([
+            { offset: 0, background: 'orange' },
+            { offset: 0.72, background: 'red' },
+            { offset: 1, background: 'var(--background)' }
+          ]);
+      umidadeAnimation.play()
+    } else if(this.medicao.umid_status == 'baixo'){
+      const umidadeAnimation: Animation = this.animationCtrl.create('umid-animation')
+          .addElement(this.umidAnimation.nativeElement)
+          .iterations(Infinity)
+          .duration(2700)
+          //.fromTo('opacity', '1', '0.5');
+          .keyframes([
+            { offset: 0, background: 'blue' },
+            { offset: 0.72, background: 'purple' },
+            { offset: 1, background: 'var(--background)' }
+          ]);
+      umidadeAnimation.play()
+    }
+
+
+  }
+
 
   startLoad() {
-    console.log('animação')
     //animação
     const alertaAnimation: Animation = this.animationCtrl.create('alerta-animation')
         .addElement(this.alertaPiscando.nativeElement)
@@ -190,8 +261,17 @@ w
     this.folderService.ocultarMedicao(11)
   }
 
+  buscarMedicao() {
+    this.folderService.getMedicao().then(med => {
+      console.log('medicao', med)
+      this.buildViewMedicao(med[0])
+    }).catch(error => {
+      console.log('Retornou Erro de Mediçao:', error);
+    })
+  }
+
   async buscarMedicoes(dataI, dataF) {
-    this.medicoes = await this.folderService.getMedicoes(dataI, dataF).then(medicoesRetorno => {
+    this.medicoes = await this.folderService.getMedicoes(dataI, dataF, '0,0,2,2').then(medicoesRetorno => {
       return medicoesRetorno
     }).catch(error => {
       console.log('Retornou Erro de Medições:', error);
@@ -204,9 +284,9 @@ w
       this.medicoes.sort((a, b) => {
         return +a.id - +b.id;
       });
-      console.log('primeiro', this.medicoes[0])
+     // console.log('primeiro', this.medicoes[0])
 
-      this.buildViewMedicao(this.medicoes[0])
+      //this.buildViewMedicao(this.medicoes[0])
 
       this.medicoes.forEach(medicao => {
         dadosGrafico.push([new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes(), medicao.Umidade, medicao.Temperatura])
@@ -231,10 +311,9 @@ w
   }
 
   buildViewMedicao(med: any){
+    console.log('build medicao', this.config, med)
 
     if(this.config){
-      console.log('configuracao', this.config)
-      console.log('medicao', this.medicao)
       this.medicao.temp = med.Temperatura
       this.medicao.umid = med.Umidade
 
@@ -254,7 +333,6 @@ w
         this.medicao.umid_status = ""
       }
     }
-    console.log(this.medicao)
   }
 
 

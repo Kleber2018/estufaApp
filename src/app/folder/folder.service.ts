@@ -19,9 +19,9 @@ export class FolderService {
     }
   }
 
-
-  getMedicoes(inicial, final){
-
+ //retorna lista de todas as medições filtradas pela data e oculto
+// cod oculto se quiser todas é 0,1,2,3, somente com código 1 e 2 usar 1,1,2,2
+  getMedicoes(inicial, final, oculto){
     if(localStorage.getItem('ipraspberry')){
       this.apiURL = localStorage.getItem('ipraspberry')
     }
@@ -29,11 +29,17 @@ export class FolderService {
     const inicialSplit = inicial.split('T')
     const finalSplit = final.split('T')
 
-    //this.ocultarMedicoes([2,4])
-
    // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
-    let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
-    return this.http.get<any>('http://'+this.apiURL+'/medicao',{headers: this.headers, params: param}).toPromise();
+    let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59', oculto: oculto};
+    return this.http.get<any>('http://'+this.apiURL+'/medicoes',{headers: this.headers, params: param}).toPromise();
+  }
+
+  // para ter a medição mais atualizada para mostrar no header
+  getMedicao(){
+    if(localStorage.getItem('ipraspberry')){
+      this.apiURL = localStorage.getItem('ipraspberry')
+    }
+    return this.http.get<any>('http://'+this.apiURL+'/medicao',{headers: this.headers}).toPromise();
   }
 
 

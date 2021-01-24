@@ -88,7 +88,15 @@
           <ion-button color="warning" type="submit" (click)="scanRede()" [disabled]="this.apiURL" >Scan Rede</ion-button>
         </ion-col>
       </ion-row>
-
+      <ion-row>
+        <ion-title size="large" style="padding: 4px 10px" *ngIf="datetimeCelular" >Celular: {{ datetimeCelular | date:'dd/MMM/yy - H:mm'}}</ion-title>
+      </ion-row>
+      <ion-row>
+        <ion-title size="large" style="padding: 4px 10px" *ngIf="datetimeDispositivo">Medidor: {{ datetimeDispositivo | date:'dd/MMM/yy - H:mm'}}</ion-title>
+      </ion-row>
+      <ion-row>
+        <ion-button color="warning" type="submit" (click)="buscarDataRapsberry()">Verificar hora Medidor</ion-button>
+      </ion-row>
     </ion-content>
   </ion-content>
 

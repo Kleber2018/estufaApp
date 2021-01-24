@@ -40,8 +40,18 @@ export class ConfigComponent implements OnInit {
   }
 
   buildFormIP(ip){
+      console.log('construindo form ip', ip)
       this.formIP = this.formBuilder.group({
           ip: [ip, [Validators.required]]
+      })
+  }
+  public datetimeDispositivo
+  public datetimeCelular
+  buscarDataRapsberry(){
+     this.configService.getDateTimeRaspberry().then(r => {
+          console.log(r);
+         this.datetimeDispositivo = r
+         this.datetimeCelular = new Date()
       })
   }
 
@@ -79,11 +89,12 @@ export class ConfigComponent implements OnInit {
   }
 
     submitConfig(){
-    console.log(this.formConfig.value)
+        console.log(this.formConfig.value)
       this.configService.updateConfig(this.formConfig.value).then(r => {
           if(r){
               if(r.retorno == 'salvo'){
                   alert(r.retorno)
+                  this.buildFormConfig()
               } else {
                   alert('erro ao salvar: ' + r.retorno)
               }

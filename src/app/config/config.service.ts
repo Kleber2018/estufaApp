@@ -61,6 +61,27 @@ export class ConfigService {
     return false
   }
 
+  async getDateTimeRaspberry(){
+    if(localStorage.getItem('ipraspberry')){
+      this.apiURL = localStorage.getItem('ipraspberry')
+    }
+    const retorno = await this.http.get<any>('http://'+ this.apiURL + '/scan', {headers: this.headers}).toPromise().then(r => {
+      return r
+    }).catch(erro => {
+      console.log(erro)
+    });
+
+    if (retorno) {
+      if (retorno.datetime) {
+        return retorno.datetime
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+
   getConfig(){
     if(localStorage.getItem('ipraspberry')){
       this.apiURL = localStorage.getItem('ipraspberry')
