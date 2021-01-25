@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
 })
+
 export class ConfigComponent implements OnInit {
   public formConfig: FormGroup;
   public formIP: FormGroup;
@@ -45,8 +46,11 @@ export class ConfigComponent implements OnInit {
           ip: [ip, [Validators.required]]
       })
   }
+
+
   public datetimeDispositivo
   public datetimeCelular
+
   buscarDataRapsberry(){
      this.configService.getDateTimeRaspberry().then(r => {
           console.log(r);
@@ -54,6 +58,12 @@ export class ConfigComponent implements OnInit {
          this.datetimeCelular = new Date()
       })
   }
+
+  // atualizar a data do raspberry igual ao do dispositivo
+  atualizarDataRaspberry(){
+      this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
+  }
+
 
   //carregando com dados nulos para criar uma nova ocorrência
   private buildFormConfig(): void {
