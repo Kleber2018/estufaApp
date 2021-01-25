@@ -14,12 +14,18 @@ import { Platform } from '@ionic/angular';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import {ConfigService} from "../../config/config.service";
 
+import { Chart } from 'chart.js';
+
 @Component({
   selector: 'app-folder',
   templateUrl: './folder.page.html',
   styleUrls: ['./folder.page.scss'],
 })
 export class FolderPage implements OnInit {
+
+  lineChart: any;
+
+
   public folder: string;
   public medicoes: any = [];
   public alertas: any = [];
@@ -271,7 +277,7 @@ w
   }
 
   async buscarMedicoes(dataI, dataF) {
-    this.medicoes = await this.folderService.getMedicoes(dataI, dataF, '0,0,2,2').then(medicoesRetorno => {
+    this.medicoes = await this.folderService.getMedicoes(dataI, dataF, '0,0,0,0').then(medicoesRetorno => {
       return medicoesRetorno
     }).catch(error => {
       console.log('Retornou Erro de Medições:', error);
@@ -288,10 +294,18 @@ w
 
       //this.buildViewMedicao(this.medicoes[0])
 
+      var temperaturas = []
+      var umidades = []
+      var datas = []
+
       this.medicoes.forEach(medicao => {
         dadosGrafico.push([new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes(), medicao.Umidade, medicao.Temperatura])
+        temperaturas.push(medicao.Temperatura)
+        umidades.push(medicao.Umidade)
+        datas.push(new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes())
 //      console.log(new Date(medicao.Data).getHours() + ":"+ new Date(medicao.Data).getMinutes())
       })
+      this.lineChartMethod(temperaturas, umidades, datas);
     } else {
       dadosGrafico.push([new Date().getHours() + ":"+ new Date().getMinutes(), '50', '25'])
       dadosGrafico.push([new Date().getHours() + ":"+ new Date().getMinutes(), '55', '20'])
@@ -301,13 +315,72 @@ w
     this.pieChart = {
       chartType: 'LineChart',
       dataTable: dadosGrafico,
+
       //firstRowIsData: true,
       options: {
      //   'title': 'Tasks',
+      // chartArea: {width: '75%'},
+        legend: {position: 'top'},
         curveType: 'function'},
     };
 
     this.pieChart.dataTable = dadosGrafico
+
+  }
+
+
+
+
+  @ViewChild('lineCanvas') private lineCanvas: ElementRef;
+  lineChartMethod(temps, umids, dats) {
+    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
+      type: 'line',
+      data: {
+        labels: dats, //['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'], //{{ dias | tojson }},
+        datasets: [{
+          label: 'Temperatura',
+          data: temps, //[2, 3, 4, 5, 3, 3, 3, 3, 3, 3, 2], //{{ temperaturas | tojson }},
+        backgroundColor: 'rgb(255,254,254, 0)',
+            borderColor: 'rgb(193,17,17)',
+            borderWidth: 1
+      },
+        {
+          label: 'Umidade',
+          data:  umids, //[2, 3, 4, 5, 3, 3, 3, 3, 3, 3, 2], //{{ umidades | tojson }},
+          backgroundColor: 'rgb(246,246,245, 0)',
+          borderColor: 'rgb(13,61,208)',
+          borderWidth: 1
+        }]
+      },
+        options: {
+          responsive: true,
+              title: {
+            display: true,
+                text: 'Medições de Temperatura e Umidade'
+          },
+          hover: {
+            mode: 'nearest',
+                intersect: true
+          },
+          scales: {
+            xAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Horário'
+              }
+            }],
+                yAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Cº / %'
+              }
+            }]
+          }
+        }
+
+    });
   }
 
   buildViewMedicao(med: any){
