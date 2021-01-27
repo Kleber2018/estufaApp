@@ -12,8 +12,10 @@ import {HttpClientModule} from "@angular/common/http";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {ReactiveFormsModule} from "@angular/forms";
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
-//import { Vibration } from '@ionic-native/vibration/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { Push } from '@ionic-native/push/ngx';
+
 
 
 
@@ -33,8 +35,9 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
     NativeAudio,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    //Vibration,
-    BackgroundMode
+    Vibration,
+    BackgroundMode,
+    Push
   ],
   bootstrap: [AppComponent]
 })

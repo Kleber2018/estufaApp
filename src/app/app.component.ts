@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 @Component({
   selector: 'app-root',
@@ -49,14 +50,15 @@ export class AppComponent implements OnInit {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private backgroundMode: BackgroundMode
   ) {
       // let status bar overlay webview
       this.statusBar.overlaysWebView(false);
 
       // set status bar to white
       //this.statusBar.backgroundColorByHexString('#339933');
-
+    this.backgroundMode.enable();
     this.initializeApp();
   }
 
