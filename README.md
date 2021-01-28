@@ -5,6 +5,8 @@ App em Ionic para monitorar os dados de Temperatura e umidade da estufa
 CONFIGURANDO AS VARIÁVEIS DE AMBIENTE
 http://www.tiagoporto.com/blog/tutorial-de-configuracao-do-ambiente-ionic-android-no-windows/
 
+corrigir erro cordova
+ionic integrations enable cordova --add
 
 remover a plataforma
 ionic cordova platform rm android
@@ -36,3 +38,6 @@ https://ionicframework.com/docs/native/status-bar
 
 Para Geolocation
 npm install @ionic-native/geolocation
+
+# gráfico
+npm install chart.js --save

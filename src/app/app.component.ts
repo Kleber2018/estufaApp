@@ -51,14 +51,14 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private backgroundMode: BackgroundMode
+   // private backgroundMode: BackgroundMode
   ) {
       // let status bar overlay webview
       this.statusBar.overlaysWebView(false);
 
       // set status bar to white
       //this.statusBar.backgroundColorByHexString('#339933');
-    this.backgroundMode.enable();
+  //  this.backgroundMode.enable();
     this.initializeApp();
   }
 
