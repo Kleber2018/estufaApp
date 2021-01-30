@@ -451,9 +451,23 @@ ngOnInit() {
   }
 
   testarAlerta(){
+
+    //teste quando o app está em background ou não
+    this.platform.ready().then(() => {
+      this.platform.pause.subscribe(() => {        
+          console.log('****UserdashboardPage PAUSED****');
+      });  
+      this.platform.resume.subscribe(() => {      
+          console.log('****UserdashboardPage RESUMED****');
+      });
+     });
+
+     
+
     setTimeout(() => {
-        
+      alert('Aguarde 9 segundos..... Verifique se os alertas estão ativos no Menu Configurar. ')
       this.executarNative('Testando')
+        alert('teste executado')
     },
     9000);
   }
