@@ -115,8 +115,8 @@ w
     this.platform.ready().then(() => { 
     console.log("platform ready");
     //alert('platform')      
-    this.nativeAudio.preloadSimple('uniqueId1', 'assets/intro.mp3')
-    this.nativeAudio.preloadComplex('uniqueId2', 'assets/intro.mp3', 1, 1, 0)
+    this.nativeAudio.preloadSimple('uniqueId1', 'assets/audio4.mp3')
+    this.nativeAudio.preloadComplex('uniqueId2', 'assets/audio4.mp3', 1, 1, 0)
 
       //  this.nativeAudio.play('uniqueId1')
 
