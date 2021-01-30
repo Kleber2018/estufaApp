@@ -4,12 +4,12 @@ import {FolderService} from "../folder.service";
 import { GoogleChartInterface } from 'ng2-google-charts';
 import {FormControl, Validators} from "@angular/forms";
 
-import { Animation, AnimationController } from '@ionic/angular';
+import { Animation, AnimationController, AlertController } from '@ionic/angular';
 
 import { LoadingController } from '@ionic/angular';
 
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
-//import { Vibration } from '@ionic-native/vibration/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
 import { Platform } from '@ionic/angular';
 //import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import {ConfigService} from "../../config/config.service";
@@ -72,9 +72,10 @@ w
                     private folderService: FolderService,
                     private animationCtrl: AnimationController,
                     private nativeAudio: NativeAudio,
-                    //private vibration: Vibration,
+                    private vibration: Vibration,
                     private platform: Platform,
                     //private backgroundMode: BackgroundMode,
+                    public alertController: AlertController,
                     private router: Router,
                     private configService: ConfigService,
                     ) {
@@ -111,11 +112,11 @@ w
       //this.statusBar.backgroundColorByHexString('#339933');
 
        // The Native Audio plugin can only be called once the platform is ready
-       this.platform.ready().then(() => { 
-        console.log("platform ready");
-        //alert('platform')      
-        this.nativeAudio.preloadSimple('uniqueId1', 'assets/intro.mp3')
-        this.nativeAudio.preloadComplex('uniqueId2', 'assets/intro.mp3', 1, 1, 0)
+    this.platform.ready().then(() => { 
+    console.log("platform ready");
+    //alert('platform')      
+    this.nativeAudio.preloadSimple('uniqueId1', 'assets/intro.mp3')
+    this.nativeAudio.preloadComplex('uniqueId2', 'assets/intro.mp3', 1, 1, 0)
 
       //  this.nativeAudio.play('uniqueId1')
 
@@ -141,21 +142,6 @@ w
         
       });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     this.inicializando()
 
   }
@@ -168,17 +154,12 @@ ngOnInit() {
 
   async inicializando() {
     const apiURL = localStorage.getItem('ipraspberry')
-
-
     if (!apiURL) {
       this.router.navigate(['/config']);
     } else {
       this.buscarMedicoes(this.dataInic, this.dataFinal)
       this.buscarAlertas()
       this.buscarMedicao()
-
-
-
       //loop para requisitar informações a cada 60000 (60 segundos)
       var vr = 0
       setInterval(function () {
@@ -202,11 +183,9 @@ ngOnInit() {
           },
           1500);
     }
-
   }
 
   startAnimaTempUmid(){
-
     //animação
     if(this.medicao.temp_status == 'alto'){
       const temperaturaAnimation: Animation = this.animationCtrl.create('temp-animation')
@@ -259,8 +238,6 @@ ngOnInit() {
           ]);
       umidadeAnimation.play()
     }
-
-
   }
 
 
@@ -276,7 +253,6 @@ ngOnInit() {
           { offset: 0.72, background: 'red' },
           { offset: 1, background: 'var(--background)' }
         ]);
-
     alertaAnimation.play()
   }
 
@@ -311,9 +287,6 @@ ngOnInit() {
       this.medicoes.sort((a, b) => {
         return +a.id - +b.id;
       });
-     // console.log('primeiro', this.medicoes[0])
-
-      //this.buildViewMedicao(this.medicoes[0])
 
       var temperaturas = []
       var umidades = []
@@ -336,7 +309,6 @@ ngOnInit() {
     this.pieChart = {
       chartType: 'LineChart',
       dataTable: dadosGrafico,
-
       //firstRowIsData: true,
       options: {
      //   'title': 'Tasks',
@@ -346,7 +318,6 @@ ngOnInit() {
     };
 
     this.pieChart.dataTable = dadosGrafico
-
   }
 
 
@@ -405,24 +376,30 @@ ngOnInit() {
   }
 
   buildViewMedicao(med: any){
-    console.log('build medicao', this.config, med)
-
     if(this.config){
       this.medicao.temp = med.Temperatura
       this.medicao.umid = med.Umidade
 
       if(med.Temperatura > this.config.temp_max){
         this.medicao.temp_status = "alto"
+        this.executarNative('Temperatura alta')
       } else if(med.Temperatura < this.config.temp_min ){
         this.medicao.temp_status = "baixo"
+        if(med.Temperatura > 0){
+          this.executarNative('Temperatura baixa')
+        }
       } else {
         this.medicao.temp_status = ""
       }
 
       if(med.Umidade > this.config.umid_max){
         this.medicao.umid_status = "alto"
+        this.executarNative('Umidade alta')
       } else if(med.Umidade < this.config.umid_min ){
         this.medicao.umid_status = "baixo"
+        if(med.Umidade > 0){
+          this.executarNative('Umidade baixa')
+        }
       } else {
         this.medicao.umid_status = ""
       }
@@ -454,10 +431,6 @@ ngOnInit() {
   }
 
   async buscarAlertas(){
-  //  this.backgroundMode.enable();
-
-
-    
     this.alertas = await this.folderService.getAlertas().then(alertasRetorno => {
       return alertasRetorno
     }).catch(error => {
@@ -468,6 +441,7 @@ ngOnInit() {
 
 
   silenciarAlertas(){
+    this.pararNative();
     this.folderService.silenciarAlertas().then(r => {
       console.log(r)
     }).catch(error => {
@@ -476,14 +450,42 @@ ngOnInit() {
     this.buscarAlertas()
   }
 
+  testarAlerta(){
+    setTimeout(() => {
+        
+      this.executarNative('Testando')
+    },
+    9000);
+  }
 
-  executarNative(){
-    alert('executado')
-   // this.vibration.vibrate([2000,2000,2000]);
-   
-    // can optionally pass a callback to be called when the file is done playing
 
-    this.nativeAudio.loop('uniqueId2')
+  async executarNative(descricao: string){
+    const alertaConfig = localStorage.getItem('alertaconfig') // se existir é pq o alerta está ativado
+    if (alertaConfig) {
+        this.vibration.vibrate([2000,2000,2000,2000,2000,2000,2000,2000,2000]);
+        this.nativeAudio.loop('uniqueId2');
+
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Alerta',
+          message: descricao,
+          buttons: [
+             {
+              text: 'SILENCIAR',
+              handler: () => {
+                console.log('Confirm Okay');
+                this.pararNative()
+              }
+            }
+          ]
+        });
+    
+        await alert.present();
+        
+    }
+
+
+
     //this.nativeAudio.play('uniqueId1', () => console.log('uniqueId1 is done playing'));
     //this.vibration.vibrate([2000,2000,2000]);
 /*
@@ -498,8 +500,8 @@ ngOnInit() {
 
   pararNative(){
     this.nativeAudio.stop('uniqueId2')
+    this.vibration.vibrate(0);
    // this.nativeAudio.unload('uniqueId1')
-
   }
 
 }

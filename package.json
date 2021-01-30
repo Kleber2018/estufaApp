@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~10.0.0",
     "@angular/platform-browser-dynamic": "~10.0.0",
     "@angular/router": "~10.0.0",
+    "@ionic-native/background-mode": "^5.31.1",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/native-audio": "^5.30.0",
     "@ionic-native/network-interface": "^4.20.0",
@@ -50,6 +51,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
+    "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.2.1",
@@ -82,7 +84,8 @@
       "cordova-plugin-ionic-keyboard": {},
       "clovelced-plugin-audiomanagement": {},
       "cordova-plugin-nativeaudio": {},
-      "cordova-plugin-vibration": {}
+      "cordova-plugin-vibration": {},
+      "cordova-plugin-background-mode": {}
     },
     "platforms": [
       "android"

@@ -16,6 +16,7 @@ export class ConfigComponent implements OnInit {
   public config: any;
   public apiURL
     public scanDispositivo = false
+    public alertaAtivado = false
   constructor(
       private formBuilder: FormBuilder,
       private configService: ConfigService,
@@ -28,6 +29,13 @@ export class ConfigComponent implements OnInit {
   ngOnInit() {}
 
   inicializar(){
+    const alertaConfig = localStorage.getItem('alertaconfig')
+    if (alertaConfig) {
+        this.alertaAtivado = true
+    } else {
+        this.alertaAtivado = false
+    }
+
       this.apiURL = localStorage.getItem('ipraspberry')
       if(!this.apiURL){
           this.buildFormIP('configurar (192.168.0.105:5000)')
@@ -147,6 +155,16 @@ export class ConfigComponent implements OnInit {
             this.scanDispositivo = false
             this.inicializar()
         }
+    }
+
+    desativarAlertas(){
+        localStorage.removeItem('alertaconfig')
+        this.alertaAtivado = false
+    }
+
+    ativarAlertas(){
+        localStorage.setItem('alertaconfig', 'ativado')
+        this.alertaAtivado = true
     }
 
 
