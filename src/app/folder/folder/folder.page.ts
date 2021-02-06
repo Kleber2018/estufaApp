@@ -366,7 +366,7 @@ ngOnInit() {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: 'Cº / %'
+                labelString: 'Fº / %'
               }
             }]
           }

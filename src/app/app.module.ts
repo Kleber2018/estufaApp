@@ -15,6 +15,7 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 //import { Push } from '@ionic-native/push/ngx';
+import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 
 
 
@@ -37,6 +38,7 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Vibration,
     BackgroundMode,
+    NetworkInterface
     //Push
   ],
   bootstrap: [AppComponent]

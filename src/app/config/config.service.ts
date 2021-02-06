@@ -34,30 +34,29 @@ export class ConfigService {
     }
   }
 
-  async scanDispositivo() {
-    var ip = '192.168.'
+  async scanDispositivo(ipCompleto) {
+    var ipArray = ipCompleto.ip.split('.')
+    var ip = ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]
     var retorno
 
-    for (let i = 0; i < 2; i++) {
-      for (let j = 100; j < 254; j++) {
-        console.log(ip + i + '.' + j + ':5000' + '/scan')
-        retorno = await this.http.get<any>('http://'+ ip + i + '.' + j + ':5000' + '/scan', {headers: this.headers}).toPromise().then(r => {
-          return r
-        }).catch(erro => {
-          console.log(erro)
-        });
+    for (let j = 100; j < 254; j++) {
+      console.log('http://'+ ip + '.' + j + ':5000' + '/scan')
+      retorno = await this.http.get<any>('http://'+ ip + '.' + j + ':5000' + '/scan', {headers: this.headers}).toPromise().then(r => {
+        return r
+      }).catch(erro => {
+        console.log(erro)
+      });
 
-        if (retorno) {
-          if (retorno.retorno) {
-            localStorage.setItem('ipraspberry', retorno.retorno+':5000')
-            i = 3;
-            j = 255;
-            this.apiURL = retorno.retorno
-            return true
-          }
+      if (retorno) {
+        if (retorno.retorno) {
+          localStorage.setItem('ipraspberry', retorno.retorno+':5000')
+          j = 255;
+          this.apiURL = retorno.retorno
+          return true
         }
       }
     }
+    alert('Não encontrado na rede: '+ ipCompleto)
     return false
   }
 

@@ -3,6 +3,9 @@ import {ConfigService} from "../config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
+import { NetworkInterface } from '@ionic-native/network-interface/ngx';
+import { splitAtColon } from '@angular/compiler/src/util';
+
 
 @Component({
   selector: 'app-config',
@@ -21,14 +24,15 @@ export class ConfigComponent implements OnInit {
       private formBuilder: FormBuilder,
       private configService: ConfigService,
       public loadingController: LoadingController,
-      private router: Router
+      private router: Router,
+      private networkInterface: NetworkInterface
   ) {
-      this.inicializar()
+         this.inicializar()
   }
 
   ngOnInit() {}
 
-  inicializar(){
+  async inicializar(){
     const alertaConfig = localStorage.getItem('alertaconfig')
     if (alertaConfig) {
         this.alertaAtivado = true
@@ -38,12 +42,30 @@ export class ConfigComponent implements OnInit {
 
       this.apiURL = localStorage.getItem('ipraspberry')
       if(!this.apiURL){
-          this.buildFormIP('configurar (192.168.0.105:5000)')
+        this.networkInterface.getWiFiIPAddress()
+            .then(address => {
+                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
+                var ipArray = address.ip.split('.')
+                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+            })
+            .catch(error => {console.error(`Unable to get IP1: ${error}`)});
+
+        this.networkInterface.getCarrierIPAddress()
+            .then(address => {
+                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
+                var ipArray = address.ip.split('.')
+                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+                })
+            .catch(error => console.error(`Unable to get IP2: ${error}`));
+
+        this.buildFormIP('configurar (192.168.0.105:5000)')
       } else {
-          const vr = this.configService.validaIP(this.apiURL).then(r => console.log('no then', r))
+          const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
           if(vr){
               this.buildFormIP(this.apiURL)
               this.buildFormConfig()
+          } else {
+            this.apiURL = localStorage.removeItem('ipraspberry')
           }
       }
   }
@@ -149,7 +171,9 @@ export class ConfigComponent implements OnInit {
     async scanRede() {
         this.scanDispositivo = true
         this.presentLoading()
-        const r = await this.configService.scanDispositivo()
+        
+
+        const r = await this.configService.scanDispositivo(this.formIP.value)
         console.log('r', r)
         if(r){
             this.scanDispositivo = false
