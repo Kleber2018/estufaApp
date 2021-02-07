@@ -11,15 +11,16 @@ import { LoadingController } from '@ionic/angular';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { Platform } from '@ionic/angular';
-//import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+
 import {ConfigService} from "../../config/config.service";
-//import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
+
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 
 
 
 import { Chart } from 'chart.js';
+import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 
 @Component({
   selector: 'app-folder',
@@ -79,7 +80,8 @@ w
                     public alertController: AlertController,
                     private router: Router,
                     private configService: ConfigService,
-                    private localNotifications: LocalNotifications
+                    private localNotifications: LocalNotifications,
+                    private pdfGenerator: PDFGenerator
                     ) {
 
     this.customPickerOptions = {
@@ -180,7 +182,7 @@ ngOnInit() {
             }
             vr++
           }.bind(this),
-          60000);
+          70000);
 
       //para atrasar a inicialização da animação
       setTimeout(() => {
@@ -268,6 +270,24 @@ ngOnInit() {
 
   ocultarMedicao(){
     this.folderService.ocultarMedicao(11)
+  }
+  
+  public teste = 'testando'
+
+  gerarPDF(){
+    let options = {
+      documentSize: 'A4',
+      type: 'share',
+      fileName: 'myFile.pdf'
+    }
+
+    var pdfhtml = '<html><body style="font-size:120%"><canvas #lineCanvas style="width:97vw; height: 280px; "></canvas><p>teste</p></body></html>';
+
+    this.pdfGenerator.fromData( pdfhtml, options)
+    .then((stats)=> console.log('status', stats) )   // ok..., ok if it was able to handle the file to the OS.  
+    .catch((err)=>console.log(err))
+
+
   }
 
   buscarMedicao() {
@@ -511,7 +531,7 @@ ngOnInit() {
           text: descricao,
           foreground: true,
           smallIcon: 'res://ic_launcher',
-          icon: 'http://estufa.com/assets/icon/favicon.png',//'http://estufa.com/assets/icon/favicon.png',
+          icon: 'res://ic_launcher',//'http://estufa.com/assets/icon/favicon.png',
           actions: [
             { id: 'silenciar', title: 'SILENCIAR' }
           ]

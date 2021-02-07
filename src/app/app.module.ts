@@ -10,21 +10,25 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from "@angular/common/http";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
-import {ReactiveFormsModule} from "@angular/forms";
+import {ReactiveFormsModule, FormsModule} from "@angular/forms";
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 //import { Push } from '@ionic-native/push/ngx';
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-
+import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
+import { FolderPage } from './folder/folder/folder.page';
+import { CommonModule } from '@angular/common';
 
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FolderPage],
   entryComponents: [],
   imports: [
+    CommonModule,
+    FormsModule,
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -40,7 +44,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     Vibration,
     BackgroundMode,
     NetworkInterface,
-    LocalNotifications
+    LocalNotifications,
+    PDFGenerator
     //Push
   ],
   bootstrap: [AppComponent]

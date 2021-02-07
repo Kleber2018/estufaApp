@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
-//import { NetworkInterface } from '@ionic-native/network-interface';
-
 @Injectable({
   providedIn: 'root'
 })

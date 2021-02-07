@@ -65,9 +65,29 @@ export class ConfigComponent implements OnInit {
               this.buildFormIP(this.apiURL)
               this.buildFormConfig()
           } else {
-            this.apiURL = localStorage.removeItem('ipraspberry')
+            localStorage.removeItem('ipraspberry')
+            this.networkInterface.getWiFiIPAddress()
+            .then(address => {
+                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
+                var ipArray = address.ip.split('.')
+                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+            })
+            .catch(error => {console.error(`Unable to get IP1: ${error}`)});
+
+        this.networkInterface.getCarrierIPAddress()
+            .then(address => {
+                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
+                var ipArray = address.ip.split('.')
+                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+                })
+            .catch(error => console.error(`Unable to get IP2: ${error}`));
           }
       }
+  }
+
+  resetarIP(){
+    localStorage.removeItem('ipraspberry')
+    this.inicializar()
   }
 
   buildFormIP(ip){
