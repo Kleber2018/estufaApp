@@ -16,6 +16,7 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 //import { Push } from '@ionic-native/push/ngx';
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 
 
@@ -38,7 +39,8 @@ import { NetworkInterface } from '@ionic-native/network-interface/ngx';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Vibration,
     BackgroundMode,
-    NetworkInterface
+    NetworkInterface,
+    LocalNotifications
     //Push
   ],
   bootstrap: [AppComponent]

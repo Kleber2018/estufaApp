@@ -14,6 +14,8 @@ import { Platform } from '@ionic/angular';
 //import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import {ConfigService} from "../../config/config.service";
 //import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 
 
 
@@ -74,10 +76,10 @@ w
                     private nativeAudio: NativeAudio,
                     private vibration: Vibration,
                     private platform: Platform,
-                    //private backgroundMode: BackgroundMode,
                     public alertController: AlertController,
                     private router: Router,
                     private configService: ConfigService,
+                    private localNotifications: LocalNotifications
                     ) {
 
     this.customPickerOptions = {
@@ -112,8 +114,12 @@ w
       //this.statusBar.backgroundColorByHexString('#339933');
 
        // The Native Audio plugin can only be called once the platform is ready
+    this.localNotifications.requestPermission()
     this.platform.ready().then(() => { 
-    console.log("platform ready");
+      var isAcceptedObservable = this.localNotifications.on('silenciar').subscribe(res =>{
+        this.pararNative();
+        console.log('Silenciando através do push');  
+      });
     //alert('platform')      
     this.nativeAudio.preloadSimple('uniqueId1', 'assets/audio4.mp3')
     this.nativeAudio.preloadComplex('uniqueId2', 'assets/audio4.mp3', 1, 1, 0)
@@ -454,6 +460,9 @@ ngOnInit() {
 
     //teste quando o app está em background ou não
     this.platform.ready().then(() => {
+
+
+
       this.platform.pause.subscribe(() => {        
           console.log('****UserdashboardPage PAUSED****');
       });  
@@ -464,18 +473,49 @@ ngOnInit() {
 
      
 
-    setTimeout(() => {
-      alert('Aguarde 9 segundos..... Verifique se os alertas estão ativos no Menu Configurar. ')
+    setTimeout(async () => {
+      //alert('Aguarde 9 segundos..... Verifique se os alertas estão ativos no Menu Configurar. ')
+    
+            // Schedule a single notification
+      //this.localNotifications.requestPermission()
+      
+/*
+      this.localNotifications.schedule({
+        id: 1,
+        title: 'Alerta de Temperatura',
+        text: 'TESTANDO',
+        foreground: true,
+        smallIcon: 'res://ic_launcher',
+        icon: 'res://ic_launcher',
+        actions: [
+          { id: '2', title: 'SILENCIAR' },
+          { id: '3', title: 'ABRIR' }
+        ]
+      });
+      */
       this.executarNative('Testando')
-        alert('teste executado')
     },
-    9000);
+    
+    6000);
   }
 
 
   async executarNative(descricao: string){
+  
+
     const alertaConfig = localStorage.getItem('alertaconfig') // se existir é pq o alerta está ativado
     if (alertaConfig) {
+        this.localNotifications.schedule({
+          id: 15,
+          title: 'Alerta da Estufa',
+          text: descricao,
+          foreground: true,
+          smallIcon: 'res://ic_launcher',
+          icon: 'http://estufa.com/assets/icon/favicon.png',//'http://estufa.com/assets/icon/favicon.png',
+          actions: [
+            { id: 'silenciar', title: 'SILENCIAR' }
+          ]
+        });
         this.vibration.vibrate([2000,2000,2000,2000,2000,2000,2000,2000,2000]);
         this.nativeAudio.loop('uniqueId2');
 
