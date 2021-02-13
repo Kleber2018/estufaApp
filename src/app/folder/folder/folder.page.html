@@ -100,6 +100,9 @@
 
     <p style="opacity: 0.2; margin-top: 24px">. </p>
       <ion-row style="margin-top: 16px">
+        <ion-col *ngIf="admin">
+          <p style="margin: 0px">Ação</p>
+        </ion-col>
         <ion-col>
           <p style="margin: 0px">Data</p>
         </ion-col>
@@ -112,6 +115,9 @@
       </ion-row>
       <ion-list *ngFor="let medicao of medicoes" style="opacity: 0.6">
         <ion-row style="width: 100vw">
+          <ion-col *ngIf="admin">
+            <ion-button color="light" (click)="deletarMedicao(medicao.id_medicao)"><ion-icon name="trash-outline"></ion-icon></ion-button>
+          </ion-col>
           <ion-col>
             <p style="margin: 0px">{{medicao.Data | date:'dd/MMM/yy - H:mm'}}</p>
           </ion-col>
@@ -131,8 +137,20 @@
       </ion-row>
   </ion-row>
   <ion-row>
-    <ion-button color="primary" (click)="testarAlerta()">Testar Alerta</ion-button>
-    <ion-button color="primary" (click)="gerarPDF()">PDF</ion-button>
+    <ion-col class="ion-align-self-end" *ngIf="admin">
+      <ion-button color="primary" (click)="testarAlerta()">Testar Alerta</ion-button>
+    </ion-col>
+    <ion-col class="ion-align-self-end" *ngIf="admin">
+      <ion-button color="primary" (click)="gerarPDF()">PDF</ion-button>
+    </ion-col>
+    <ion-col class="ion-align-self-end" *ngIf="!admin">
+      <ion-button color="light"  (click)="habilitaDelete(true)">Admin</ion-button>
+    </ion-col>
+    <ion-col class="ion-align-self-end" *ngIf="admin" >
+      <ion-button color="light" (click)="habilitaDelete(false)">Normal</ion-button>
+    </ion-col>
+   
+    
     
   </ion-row>
 </ion-content>

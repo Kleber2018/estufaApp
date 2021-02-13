@@ -31,6 +31,7 @@ export class FolderPage implements OnInit {
 
   lineChart: any;
 
+  public admin: boolean = false;
 
   public folder: string;
   public medicoes: any = [];
@@ -83,6 +84,7 @@ w
                     private localNotifications: LocalNotifications,
                     private pdfGenerator: PDFGenerator
                     ) {
+                      this.admin = false
 
     this.customPickerOptions = {
       buttons: [{
@@ -474,6 +476,18 @@ ngOnInit() {
       console.log('Retornou Erro de silenciar alertas:', error);
     })
     this.buscarAlertas()
+  }
+
+
+  deletarMedicao(id: string){
+    this.folderService.ocultarMedicao(id).then( r => {
+      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
+    })
+  }
+
+
+  habilitaDelete(status: boolean){
+    this.admin = status
   }
 
   testarAlerta(){
