@@ -14,7 +14,7 @@ import { splitAtColon } from '@angular/compiler/src/util';
 })
 
 export class ConfigComponent implements OnInit {
-  public formConfig: FormGroup;
+
   public formIP: FormGroup;
   public config: any;
   public apiURL
@@ -63,9 +63,8 @@ export class ConfigComponent implements OnInit {
           const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
           if(vr){
               this.buildFormIP(this.apiURL)
-              this.buildFormConfig()
           } else {
-            localStorage.removeItem('ipraspberry')
+           // localStorage.removeItem('ipraspberry')
             this.networkInterface.getWiFiIPAddress()
             .then(address => {
                 console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
@@ -107,72 +106,23 @@ export class ConfigComponent implements OnInit {
          this.datetimeDispositivo = r
          this.datetimeCelular = new Date()
       })
-  }
+}
 
-  // atualizar a data do raspberry igual ao do dispositivo
-  atualizarDataRaspberry(){
-      this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
-  }
+// atualizar a data do raspberry igual ao do dispositivo
+atualizarDataRaspberry(){
+    this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
+}
 
 
-  //carregando com dados nulos para criar uma nova ocorrência
-  private buildFormConfig(): void {
-      this.configService.getConfig().then(configRetorno => {
-          console.log('Retornou /config', configRetorno);
-          if(configRetorno){
-              if(Array.isArray(configRetorno)){
-                  this.config = configRetorno[0];
-              } else {
-                  this.config = configRetorno;
-              }
-
-              localStorage.setItem('configraspberry', JSON.stringify(this.config))
-
-              this.formConfig = this.formBuilder.group({
-                  intervalo_seconds: [this.config.intervalo_seconds, [Validators.required]],
-                  temp_min: [this.config.temp_min, [Validators.required]],
-                  temp_max: [this.config.temp_max, [Validators.required]],
-                  umid_min: [this.config.umid_min, [Validators.required]],
-                  umid_max: [this.config.umid_max, [Validators.required]],
-                  obs: [this.config.obs, [Validators.required]],
-              })
-          }
-
-      }).catch(error => {
-              if (error.error){
-                  console.log('Retornou Erro:',error.error);
-              } else {
-                  console.log('Retornou Erro:',error);
-              }
-          }
-      )
-  }
-
-    submitConfig(){
-        console.log(this.formConfig.value)
-      this.configService.updateConfig(this.formConfig.value).then(r => {
-          if(r){
-              if(r.retorno == 'salvo'){
-                  alert(r.retorno)
-                  this.buildFormConfig()
-              } else {
-                  alert('erro ao salvar: ' + r.retorno)
-              }
-          } else {
-              alert('erro ao salvar: ' + r.retorno)
-          }
-      })
+submitIP(){
+    //'http://'+retorno.retorno+':5000'
+    var splitted = this.formIP.value.ip.split(".");
+    //verifica se é um número
+    if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
+        localStorage.setItem('ipraspberry', this.formIP.value.ip)
+        this.router.navigate(['/folder']);
     }
-
-    submitIP(){
-        //'http://'+retorno.retorno+':5000'
-        var splitted = this.formIP.value.ip.split(".");
-        //verifica se é um número
-        if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
-            localStorage.setItem('ipraspberry', this.formIP.value.ip)
-            this.router.navigate(['/folder/Inbox']);
-        }
-    }
+}
 
     async presentLoading() {
         while (this.scanDispositivo){
@@ -192,7 +142,6 @@ export class ConfigComponent implements OnInit {
         this.scanDispositivo = true
         this.presentLoading()
         
-
         const r = await this.configService.scanDispositivo(this.formIP.value)
         console.log('r', r)
         if(r){

@@ -16,6 +16,14 @@ const routes: Routes = [
     loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
   },*/
   {
+    path: 'measurements/:id',
+    loadChildren: () => import('./measurements/measurements.module').then( m => m.MeasurementsModule)
+  },
+  {
+    path: 'alert-config/:id',
+    loadChildren: () => import('./alert-config/alert-config.module').then( m => m.AlertConfigModule)
+  },
+  {
     path: 'config',
     loadChildren: () => import('./config/config.module').then( m => m.ConfigModule)
   },

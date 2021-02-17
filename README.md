@@ -17,6 +17,20 @@ executar no celular
 ionic cordova run android -l
 
 
+## Generate Angular
+
+Generate módulo com rota:
+
+```ionic g module alert-config --routing=true```
+
+Generate componente em nova pasta selecionando o modulo:
+
+```ionic g component alert-config/alert-config --module=measurements```
+
+Generate service
+
+```ionic g s alert-config/alert-config```
+
 
 
 ## TESTE

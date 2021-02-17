@@ -41,17 +41,7 @@ export class FolderService {
   }
 
 
-  ocultarMedicao(id){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
-
-    let param: any = {id: id};
-
-    return this.http.get<any>('http://'+ this.apiURL+'/apiocultarmedicoes',{headers: this.headers, params: param}).toPromise();
-  }
-
-
+ 
   getAlertas(){
     this.apiURL = localStorage.getItem('ipraspberry')
     return this.http.get<any>('http://'+this.apiURL+'/alertas',{headers: this.headers}).toPromise();

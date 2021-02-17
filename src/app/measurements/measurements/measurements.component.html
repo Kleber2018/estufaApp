@@ -11,23 +11,7 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-row class="ion-justify-content-center" *ngIf="medicao" style="margin: 24px 0px">
-    <ion-col size="5" >
-      <ion-row>Temperatura</ion-row>
-      <ion-row #tempAnimation>
-        <ion-title size="large" style="padding: 4px 10px" >{{ medicao.temp }}</ion-title>
-      </ion-row>
-      <ion-row>{{medicao.temp_status}}</ion-row>
-    </ion-col>
-    <ion-col size="5">
-      <ion-row>Umidade</ion-row>
-      <ion-row #umidAnimation>
-        <ion-title size="large" style="padding: 4px 10px">{{ medicao.umid }}</ion-title>
-      </ion-row>
-      <ion-row>{{medicao.umid_status}}</ion-row>
-    </ion-col>
-  </ion-row>
-
+  
   <ion-row>
     <ion-header collapse="condense">
       <ion-toolbar>
@@ -70,37 +54,45 @@
         ></ion-datetime>
     </ion-item>
 
-    <p style="opacity: 0.2">. </p>
-
-    <ion-row style="width: 100vw">
-      <ion-col size="4">
-        <p style="margin: 0px">Data</p>
-      </ion-col>
-      <ion-col size="8">
-        <p style="margin: 0px">Alerta</p>
-      </ion-col>
-    </ion-row>
-    <div *ngIf="alertas.length == 0">
-      <p style="margin: 8px">Nenhum alerta</p>
-    </div>
-    <div #alertaPiscando style="width: 100vw">
-      <ion-list *ngFor="let alerta of alertas" style="opacity: 0.6; padding: 0px; width: 100vw" >
-        <ion-row >
-          <ion-col size="4">
-            <p style="margin: 0px">{{alerta.created | date:'dd/MMM/yy - H:mm'}}</p>
+    <p style="opacity: 0.2; margin-top: 24px">. </p>
+      <ion-row style="margin-top: 16px">
+        <ion-col *ngIf="admin">
+          <p style="margin: 0px">Ação</p>
+        </ion-col>
+        <ion-col>
+          <p style="margin: 0px">Data</p>
+        </ion-col>
+        <ion-col>
+          <p style="margin: 0px">Temp</p>
+        </ion-col>
+        <ion-col>
+          <p style="margin: 0px">Umid</p>
+        </ion-col>
+      </ion-row>
+      <ion-list *ngFor="let medicao of medicoes" style="opacity: 0.6">
+        <ion-row style="width: 100vw">
+          <ion-col *ngIf="admin">
+            <ion-button color="light" (click)="deletarMedicao(medicao.id_medicao)"><ion-icon name="trash-outline"></ion-icon></ion-button>
           </ion-col>
-          <ion-col size="8">
-            <p style="margin: 0px">{{alerta.descricao}}</p>
+          <ion-col>
+            <p style="margin: 0px">{{medicao.Data | date:'dd/MMM/yy - H:mm'}}</p>
+          </ion-col>
+          <ion-col >
+            <p style="margin: 0px">{{medicao.Temperatura}}</p>
+          </ion-col>
+          <ion-col >
+            <p style="margin: 0px">{{medicao.Umidade}}</p>
           </ion-col>
         </ion-row>
       </ion-list>
-    </div>
-    <ion-button color="warning" (click)="silenciarAlertas()" *ngIf="alertas.length !== 0">Limpar Alertas</ion-button>
+
+      <ion-row class="ion-align-items-end" style="margin: 8px 0px">
+        <ion-col class="ion-align-self-end">
+          {{medicoes.length}} Medições
+        </ion-col>
+      </ion-row>
   </ion-row>
   <ion-row>
-    <ion-col class="ion-align-self-end" *ngIf="admin">
-      <ion-button color="primary" (click)="testarAlerta()">Testar Alerta</ion-button>
-    </ion-col>
     <ion-col class="ion-align-self-end" *ngIf="admin">
       <ion-button color="primary" (click)="gerarPDF()">PDF</ion-button>
     </ion-col>
@@ -110,5 +102,8 @@
     <ion-col class="ion-align-self-end" *ngIf="admin" >
       <ion-button color="light" (click)="habilitaDelete(false)">Normal</ion-button>
     </ion-col>
+   
+    
+    
   </ion-row>
 </ion-content>

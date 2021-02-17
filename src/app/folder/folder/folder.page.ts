@@ -21,6 +21,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 import { Chart } from 'chart.js';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
+import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 
 @Component({
   selector: 'app-folder',
@@ -80,7 +81,7 @@ w
                     private platform: Platform,
                     public alertController: AlertController,
                     private router: Router,
-                    private configService: ConfigService,
+                    private alertConfigService: AlertConfigService,
                     private localNotifications: LocalNotifications,
                     private pdfGenerator: PDFGenerator
                     ) {
@@ -107,7 +108,7 @@ w
         : null;
 
     if (!intervaloDias) {
-      intervaloDias = 6
+      intervaloDias = 60
     }
     var d = new Date();
     d.setDate(d.getDate() - intervaloDias);
@@ -268,10 +269,6 @@ ngOnInit() {
 
   selecionadoData(){
     this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
-  }
-
-  ocultarMedicao(){
-    this.folderService.ocultarMedicao(11)
   }
   
   public teste = 'testando'
@@ -438,7 +435,7 @@ ngOnInit() {
   buscaConfig(){
     this.config = JSON.parse(localStorage.getItem('configraspberry'))
     if(!this.config){
-      this.configService.getConfig().then(configRetorno => {
+      this.alertConfigService.getConfig().then(configRetorno => {
         if(configRetorno){
           if(Array.isArray(configRetorno)){
             this.config = configRetorno[0];
@@ -476,13 +473,6 @@ ngOnInit() {
       console.log('Retornou Erro de silenciar alertas:', error);
     })
     this.buscarAlertas()
-  }
-
-
-  deletarMedicao(id: string){
-    this.folderService.ocultarMedicao(id).then( r => {
-      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
-    })
   }
 
 

@@ -20,9 +20,19 @@ export class AppComponent implements OnInit {
       icon: 'paper-plane'
     },
     {
+      title: 'Medições',
+      url: '/measurements/1',
+      icon: 'list'
+    },
+    {
       title: 'Alertas',
       url: '/alertas',
-      icon: 'archive'
+      icon: 'list'
+    },
+    {
+      title: 'Configurar Alertas',
+      url: '/alert-config/1',
+      icon: 'warning'
     },
     // {
     //   title: 'Favorites',
