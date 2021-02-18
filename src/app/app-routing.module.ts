@@ -31,6 +31,7 @@ const routes: Routes = [
     path: 'alertas',
     loadChildren: () => import('./alert/alert.module').then( m => m.AlertModule)
   }
+
 ];
 
 @NgModule({

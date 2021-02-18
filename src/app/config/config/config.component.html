@@ -19,32 +19,31 @@
     </ion-header>
   </ion-content>
 
-  <ion-content  *ngIf="formIP" [fullscreen]="true">
+  <ion-content  [fullscreen]="true">
     <ion-header collapse="condense">
       <ion-toolbar>
         <ion-title size="large">Endereço IP do Medidor</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content [formGroup]="formIP">
+    
 
+
+
+    <ion-content>
       <ion-item-divider style="margin: 8px 0px">
-        <ion-text>IP do medidor Raspberry na rede</ion-text>
-      </ion-item-divider>
-      <ion-item>
-        <ion-label position="floating">IP: </ion-label>
-        <ion-input formControlName="ip" type="text"></ion-input>
-      </ion-item>
-
-      <ion-row class="ion-justify-content-center" style="margin: 8px">
-        <ion-button color="warning" type="submit" (click)="submitIP()" [disabled]="(!formIP.valid)">Salvar</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 16px">
-        <ion-button  type="submit" (click)="resetarIP()">Resetar IP</ion-button>
-    </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 16px">
-          <ion-button color="warning" type="submit" (click)="scanRede()" [disabled]="this.apiURL" >Scan Rede</ion-button>
-      </ion-row>
+        <ion-grid>
+          <ion-row>
+            <ion-text>IP do medidor Raspberry na rede</ion-text>
+          </ion-row>
+          <ion-row style="padding: 8px 0px;">
+            <ion-text>{{this.apiURL}}</ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-button color="warning" type="submit" (click)="IPModal()" >Alterar IP</ion-button>
+          </ion-row> 
+        </ion-grid>
+      </ion-item-divider> 
       <ion-row>
         <ion-title size="large" style="padding: 4px 10px" *ngIf="datetimeCelular" >Celular: {{ datetimeCelular | date:'dd/MMM/yy - H:mm'}}</ion-title>
       </ion-row>

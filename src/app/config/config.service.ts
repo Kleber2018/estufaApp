@@ -34,6 +34,27 @@ export class ConfigService {
     }
   }
 
+
+  async validaDispositivo(ip) {
+    const retorno = await this.http.get<any>('http://'+ ip + ':5000' + '/scan', {headers: this.headers}).toPromise().then(r => {
+      return r
+    }).catch(erro => {
+    //  console.log(erro)
+      return false;
+    });
+
+    if (retorno) {
+      if (retorno.retorno) {
+        return retorno.retorno
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+
+/*
   async scanDispositivo(ipCompleto) {
     var ipArray = ipCompleto.ip.split('.')
     var ip = ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]
@@ -59,7 +80,7 @@ export class ConfigService {
     alert('Não encontrado na rede: '+ ipCompleto)
     return false
   }
-
+*/
   async getDateTimeRaspberry(){
     if(localStorage.getItem('ipraspberry')){
       this.apiURL = localStorage.getItem('ipraspberry')

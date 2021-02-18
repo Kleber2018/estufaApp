@@ -5,6 +5,9 @@ import {LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { splitAtColon } from '@angular/compiler/src/util';
+import { ModalController } from '@ionic/angular';
+
+import {ModalScanPage} from '../modal-scan/modal-scan.page'
 
 
 @Component({
@@ -18,19 +21,19 @@ export class ConfigComponent implements OnInit {
   public formIP: FormGroup;
   public config: any;
   public apiURL
-    public scanDispositivo = false
+
     public alertaAtivado = false
   constructor(
       private formBuilder: FormBuilder,
       private configService: ConfigService,
-      public loadingController: LoadingController,
       private router: Router,
-      private networkInterface: NetworkInterface
+      public modalController: ModalController
   ) {
          this.inicializar()
   }
 
   ngOnInit() {}
+
 
   async inicializar(){
     const alertaConfig = localStorage.getItem('alertaconfig')
@@ -40,60 +43,13 @@ export class ConfigComponent implements OnInit {
         this.alertaAtivado = false
     }
 
-      this.apiURL = localStorage.getItem('ipraspberry')
-      if(!this.apiURL){
-        this.networkInterface.getWiFiIPAddress()
-            .then(address => {
-                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
-                var ipArray = address.ip.split('.')
-                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
-            })
-            .catch(error => {console.error(`Unable to get IP1: ${error}`)});
-
-        this.networkInterface.getCarrierIPAddress()
-            .then(address => {
-                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
-                var ipArray = address.ip.split('.')
-                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
-                })
-            .catch(error => console.error(`Unable to get IP2: ${error}`));
-
-        this.buildFormIP('configurar (192.168.0.105:5000)')
-      } else {
-          const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
-          if(vr){
-              this.buildFormIP(this.apiURL)
-          } else {
-           // localStorage.removeItem('ipraspberry')
-            this.networkInterface.getWiFiIPAddress()
-            .then(address => {
-                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
-                var ipArray = address.ip.split('.')
-                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
-            })
-            .catch(error => {console.error(`Unable to get IP1: ${error}`)});
-
-        this.networkInterface.getCarrierIPAddress()
-            .then(address => {
-                console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
-                var ipArray = address.ip.split('.')
-                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
-                })
-            .catch(error => console.error(`Unable to get IP2: ${error}`));
-          }
-      }
-  }
-
-  resetarIP(){
-    localStorage.removeItem('ipraspberry')
-    this.inicializar()
-  }
-
-  buildFormIP(ip){
-      console.log('construindo form ip', ip)
-      this.formIP = this.formBuilder.group({
-          ip: [ip, [Validators.required]]
-      })
+    this.apiURL = localStorage.getItem('ipraspberry')
+    if(this.apiURL){
+    const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
+        if(vr){
+            console.log('encontrado')
+        }
+    }
   }
 
 
@@ -114,41 +70,6 @@ atualizarDataRaspberry(){
 }
 
 
-submitIP(){
-    //'http://'+retorno.retorno+':5000'
-    var splitted = this.formIP.value.ip.split(".");
-    //verifica se é um número
-    if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
-        localStorage.setItem('ipraspberry', this.formIP.value.ip)
-        this.router.navigate(['/folder']);
-    }
-}
-
-    async presentLoading() {
-        while (this.scanDispositivo){
-            const loading = await this.loadingController.create({
-                cssClass: 'my-custom-class',
-                message: 'Procurando dispositivo na rede...',
-                duration: 10000
-            });
-            await loading.present();
-
-            const { role, data } = await loading.onDidDismiss();
-            console.log('Loading dismissed!');
-        }
-    }
-
-    async scanRede() {
-        this.scanDispositivo = true
-        this.presentLoading()
-        
-        const r = await this.configService.scanDispositivo(this.formIP.value)
-        console.log('r', r)
-        if(r){
-            this.scanDispositivo = false
-            this.inicializar()
-        }
-    }
 
     desativarAlertas(){
         localStorage.removeItem('alertaconfig')
@@ -160,7 +81,36 @@ submitIP(){
         this.alertaAtivado = true
     }
 
-
+    async IPModal() {
+        var ipLocal = '127.0.0.1'
+        if(this.apiURL){
+            ipLocal = this.apiURL
+        }
+        const modal = await this.modalController.create({
+          component: ModalScanPage,
+          componentProps: {
+            'IP': ipLocal
+          }
+          //cssClass: 'my-custom-class'
+        });
+        modal.present();
+        modal.onWillDismiss().then(data=>{
+            console.log('modal', data)
+            if(data){
+                if(data.data){
+                    if(data.data.IP){
+                        console.log('Modal retorno', data.data.IP)
+                        var splitted = data.data.IP.split(".");
+                        //verifica se é um número
+                        if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
+                            localStorage.setItem('ipraspberry', `${data.data.IP}:5000`)
+                            this.router.navigate(['/folder']);
+                        }   
+                    }
+                }
+            }
+            })
+    }
 }
 
 

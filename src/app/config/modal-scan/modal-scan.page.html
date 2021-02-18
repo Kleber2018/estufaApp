@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>IP do Medidor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item-divider style="margin: 8px 0px">
+    <ion-text *ngIf="true">IP do medidor Raspberry na rede</ion-text>
+  </ion-item-divider>
+  <ion-item-group  [formGroup]="formIP">
+    <ion-item>
+      <ion-label position="floating">IP: </ion-label>
+      <ion-input formControlName="ip" type="text"></ion-input>
+    </ion-item>
+    <ion-row class="ion-justify-content-center" style="margin: 8px">
+      <ion-button color="warning" type="submit" (click)="submitIP()" [disabled]="(!formIP.valid)">Salvar</ion-button>
+    </ion-row>
+  </ion-item-group>
+
+  <ion-grid>
+    <ion-row class="ion-justify-content-center" style="margin: 16px">
+      <ion-button  type="submit" (click)="resetarIP()">Resetar IP</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center" *ngIf="this.scanDispositivo">
+      <ion-spinner name="lines" ></ion-spinner>
+    </ion-row>
+    <ion-row class="ion-justify-content-center" style="margin: 16px" *ngIf="!this.scanDispositivo">
+      <ion-button color="warning" type="submit" (click)="promiseScanRede()">Scan Rede</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center" style="margin: 16px" *ngIf="!this.scanDispositivo">
+      <ion-button color="warning" type="submit" (click)="SyncScanRede()">Scan Rede Asyncrono</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center" style="margin: 16px" *ngIf="this.scanDispositivo">
+      <ion-button color="warning" type="submit" (click)="pararScanRede()" >Parar Scan Rede</ion-button>
+    </ion-row>
+  </ion-grid>
+  <ion-item-divider style="margin: 8px 0px" *ngIf="dispositivosIp.length > 0">
+    <ion-text *ngIf="true">Selecione o dispositivo da lista abaixo:</ion-text>
+  </ion-item-divider>
+  <ion-list *ngFor="let ip of dispositivosIp">
+    <ion-item lass="ion-justify-content-center">
+      <ion-button expand="full" fill="outline" (click)="buildFormIP(ip)">Raspberry: {{ip}}</ion-button>
+    </ion-item>
+  </ion-list>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center" style="margin: 32px">
+      <ion-button color="success" expand="block" (click)="dismiss()">Voltar</ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

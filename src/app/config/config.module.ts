@@ -7,16 +7,20 @@ import {IonicModule} from "@ionic/angular";
 import {Ng2GoogleChartsModule} from "ng2-google-charts";
 import {ConfigComponent} from "./config/config.component";
 import {FolderPage} from "../folder/folder/folder.page";
+import { ModalScanPage } from './modal-scan/modal-scan.page';
 
 
 @NgModule({
-  declarations: [ConfigComponent],
+  declarations: [
+    ConfigComponent,     
+    ModalScanPage
+  ],
   imports: [
     CommonModule,
     ConfigRoutingModule,
     FormsModule,
     IonicModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
 })
 export class ConfigModule { }
