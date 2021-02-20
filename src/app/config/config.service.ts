@@ -23,7 +23,7 @@ export class ConfigService {
     console.log('fora', retorno)
     if (retorno) {
       if (retorno.retorno) {
-        localStorage.setItem('ipraspberry', retorno.retorno + ':5000')
+        //localStorage.setItem('ipraspberry', retorno.retorno + ':5000')
         this.apiURL = retorno.retorno
         return true
       } else {
@@ -36,7 +36,7 @@ export class ConfigService {
 
 
   async validaDispositivo(ip) {
-    const retorno = await this.http.get<any>('http://'+ ip + ':5000' + '/scan', {headers: this.headers}).toPromise().then(r => {
+    const retorno = await this.http.get<any>('http://'+ ip + '/scan', {headers: this.headers}).toPromise().then(r => {
       return r
     }).catch(erro => {
     //  console.log(erro)

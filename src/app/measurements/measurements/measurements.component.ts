@@ -49,9 +49,7 @@ export class MeasurementsComponent implements OnInit {
                     private measurementsService: MeasurementsService,
                     private pdfGenerator: PDFGenerator
                     ) {
-                      
     this.admin = false
-
     this.customPickerOptions = {
       buttons: [{
         text: 'Buscar',
@@ -77,23 +75,13 @@ export class MeasurementsComponent implements OnInit {
     d.setDate(d.getDate() - intervaloDias);
     this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
     this.formDataInic = new FormControl(this.dataInic, []);
-
-    this.inicializando()
+    this.buscarMedicoes(this.dataInic, this.dataFinal)
   }
 
 
   ngOnInit() {  }
 
-  async inicializando() {
-    const apiURL = localStorage.getItem('ipraspberry')
-    if (!apiURL) {
-      this.router.navigate(['/config']);
-    } else {
-      this.buscarMedicoes(this.dataInic, this.dataFinal)
-    }
-  }
-
-  
+    
   selecionadoData(){
     this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
   }
@@ -103,7 +91,6 @@ export class MeasurementsComponent implements OnInit {
   }
   
   public teste = 'testando'
-
   gerarPDF(){
     let options = {
       documentSize: 'A4',
@@ -132,7 +119,6 @@ export class MeasurementsComponent implements OnInit {
       this.medicoes.sort((a, b) => {
         return +a.id - +b.id;
       });
-
       var temperaturas = []
       var umidades = []
       var datas = []

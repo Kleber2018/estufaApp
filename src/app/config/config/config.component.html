@@ -61,7 +61,10 @@
         <ion-button color="success" expand="block" (click)="ativarAlertas()">Ativar Alertas</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="!alertaAtivado">
-        <p>Versão 14</p>
+        <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center" style="margin: 32px">
+        <p>Versão 15</p>
      </ion-row>
     </ion-content>
   </ion-content>

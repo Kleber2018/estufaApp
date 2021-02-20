@@ -17,23 +17,38 @@ export class AppComponent implements OnInit {
     {
       title: 'Home',
       url: '/folder',
-      icon: 'paper-plane'
+      icon: 'home'
     },
     {
+      title: 'Configurações Gerais',
+      url: '/folder',
+      icon: 'warning'
+    },
+    {
+      title: 'Ajuda',
+      url: '/folder',
+      icon: 'help-circle'
+    },
+    {
+      title: 'Sobre',
+      url: '/',
+      icon: 'alert-circle'
+    },
+ /*   {
       title: 'Medições',
       url: '/measurements/1',
       icon: 'list'
-    },
-    {
+    },*/
+  /*  {
       title: 'Alertas',
       url: '/alertas',
       icon: 'list'
-    },
-    {
+    },*/
+  /*  {
       title: 'Configurar Alertas',
       url: '/alert-config/1',
       icon: 'warning'
-    },
+    },*/
     // {
     //   title: 'Favorites',
     //   url: '/folder/Favorites',
@@ -49,11 +64,7 @@ export class AppComponent implements OnInit {
     //   url: '/folder/Trash',
     //   icon: 'trash'
     // },
-     {
-       title: 'Configurações',
-       url: '/config',
-       icon: 'warning'
-     }
+     
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 

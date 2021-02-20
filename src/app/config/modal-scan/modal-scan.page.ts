@@ -25,7 +25,13 @@ export class ModalScanPage implements OnInit {
 
   ngOnInit() {
     console.log('construtor do modal: ', this.IP)
-    this.buildFormIP(this.IP)
+    var arrayIP = this.IP.split(':')
+    if(arrayIP.length >= 2){
+      this.buildFormIP(arrayIP[0], arrayIP[1])
+    } else {
+      this.buildFormIP(arrayIP[0], '5000')
+    }
+
   }
 
   dismiss(ipRetorno?: string) {
@@ -51,38 +57,39 @@ export class ModalScanPage implements OnInit {
             .then(address => {
                 console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
                 var ipArray = address.ip.split('.')
-                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+                this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX', '5000');
             })
             .catch(error => {
               console.error(`Unable to get IP1: ${error}`)
-              this.buildFormIP("127.0.0.1");
+              this.buildFormIP("127.0.0.1", '5000');
             });
 
     this.networkInterface.getCarrierIPAddress()
         .then(address => {
             console.info(`IP: ${address.ip}, Subnet: ${address.subnet}`); 
             var ipArray = address.ip.split('.')
-            this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX');
+            this.buildFormIP(ipArray[0]+'.'+ipArray[1]+'.'+ipArray[2]+'.XXX', '5000');
             })
         .catch(error => {
           console.error(`Unable to get IP2: ${error}`)
-          this.buildFormIP("127.0.0.1");
+          this.buildFormIP("127.0.0.1", '5000');
         });
   }
 
 
-  buildFormIP(ip){
+  buildFormIP(ip, porta){
     console.log('construindo form ip', ip)
     this.formIP = this.formBuilder.group({
-        ip: [ip, [Validators.required]]
+        ip: [ip, [Validators.required]],
+        porta: [porta, [Validators.required]]
     })
   }
 
   async submitIP(){
-    const r = await this.configService.validaDispositivo(this.formIP.value.ip)
+    const r = await this.configService.validaDispositivo(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
     if(r){
       console.log('retornou do dispositvo', r)
-      this.dismiss(this.formIP.value.ip)
+      this.dismiss(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
     } else {
 
       const alert = await this.alertController.create({
@@ -98,7 +105,7 @@ export class ModalScanPage implements OnInit {
         }, {
           text: 'Salvar',
           handler: () => {
-            this.dismiss(this.formIP.value.ip)
+            this.dismiss(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
           }
         }]
       });
@@ -137,7 +144,7 @@ export class ModalScanPage implements OnInit {
     this.indexScan = 0
     for (this.indexScan; this.indexScan < 254; this.indexScan++) {
       console.log('http://'+ ip + '.' + this.indexScan + ':5000' + '/scan')
-      this.configService.validaDispositivo(ip + '.' + this.indexScan).then( r => {
+      this.configService.validaDispositivo(ip + '.' + this.indexScan+ ':' + this.formIP.value.porta).then( r => {
         console.log('asincrono ', r)
         if(r){
           console.log('if', r)

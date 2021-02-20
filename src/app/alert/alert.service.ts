@@ -6,6 +6,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class AlertService {
   public  apiURL = '192.168.0.105:5000'
+  public headers = new HttpHeaders()
+      .set('Content-Type', 'application/json');
   //public  apiURL = 'http://127.0.0.1:5000'
   constructor(private http : HttpClient) { }
 

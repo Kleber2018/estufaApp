@@ -1,8 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button ></ion-menu-button>
     </ion-buttons>
+  
+    <ion-buttons slot="end">
+      <ion-button color="primary">
+        <ion-icon name="add-circle" style="font-size: 32px;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
    <!-- <ion-title>{{ folder }}</ion-title>-->
     <!-- <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button> -->
   </ion-toolbar>
@@ -11,43 +18,83 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-row class="ion-justify-content-center" *ngIf="medicao" style="margin: 24px 0px">
-    <ion-col size="5" >
-      <ion-row>Temperatura</ion-row>
-      <ion-row #tempAnimation>
-        <ion-title size="large" style="padding: 4px 10px" >{{ medicao.temp }}</ion-title>
-      </ion-row>
-      <ion-row>{{medicao.temp_status}}</ion-row>
-    </ion-col>
-    <ion-col size="5">
-      <ion-row>Umidade</ion-row>
-      <ion-row #umidAnimation>
-        <ion-title size="large" style="padding: 4px 10px">{{ medicao.umid }}</ion-title>
-      </ion-row>
-      <ion-row>{{medicao.umid_status}}</ion-row>
-    </ion-col>
-  </ion-row>
+  <ion-card>
+    <ion-item>
+      <ion-label>Estufa Nome</ion-label>
+      <ion-button color="light" slot="end" size="default" (click)="abrirConfigEstufa('1')"><ion-icon name="settings-outline"></ion-icon></ion-button>
+    </ion-item>
+    <ion-item class="ion-activated">
+        <ion-col>
+          <ion-row>
+            <ion-label class="txt-temp-umid">Temperatura</ion-label>
+          </ion-row>
+          <ion-row class='temp-umid-valor' #tempAnimation>
+            <ion-icon name="thermometer-outline"></ion-icon>
+            <ion-label>{{ medicao.temp }}</ion-label>
+          </ion-row>
+          <ion-row >
+            <ion-label class="txt-temp-umid">{{medicao.temp_status}}</ion-label>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-label class="txt-temp-umid">Umidade</ion-label>
+          </ion-row>
+          <ion-row class='temp-umid-valor' #umidAnimation>
+            <ion-icon name="water-outline"></ion-icon>
+            <ion-label>{{ medicao.umid }}</ion-label>
+          </ion-row>
+          <ion-row>
+            <ion-label class="txt-temp-umid">{{medicao.umid_status}}</ion-label>
+          </ion-row>
+        </ion-col>
+    </ion-item>
 
-  <ion-row>
-    <ion-header collapse="condense">
-      <ion-toolbar>
-        <ion-title size="large">{{ folder }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
-  </ion-row>
+
+    <ion-item class="ion-activated ion-justify-content-center" >
+      <ion-col>
+        <ion-row class="ion-justify-content-center">
+          <ion-button color="light"  size="default"  *ngIf="alertaAtivado" (click)="desativarAlerta('1')"><ion-icon style="color: darkgreen;"  name="volume-high-outline"></ion-icon></ion-button>
+          <ion-button color="light" size="default" *ngIf="!alertaAtivado" (click)="ativarAlerta('1')"><ion-icon style="color: darkred;" name="volume-mute-outline"></ion-icon></ion-button>  
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-label *ngIf="alertaAtivado" style="color: darkgreen; font-size: small;">Ativado</ion-label>
+          <ion-label *ngIf="!alertaAtivado" style="color: darkred; font-size: small;">Desativado</ion-label>
+        </ion-row>
+        </ion-col>
+      <ion-col>
+        <ion-row class="ion-justify-content-center">
+          <ion-button color="light" size="default" (click)="abrirAlertasEstufa('1')"><ion-icon name="warning-outline" ></ion-icon></ion-button>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-label style="font-size: small;">Alertas</ion-label>
+        </ion-row>
+      </ion-col>
+      <ion-col>
+        <ion-row class="ion-justify-content-center">
+          <ion-button color="light"  size="default" (click)="abrirMedicoesEstufa('1')" ><ion-icon name="bar-chart-outline" ></ion-icon></ion-button>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-label style="font-size: small;">Medições</ion-label>
+        </ion-row>
+      </ion-col>
+    </ion-item>
+  </ion-card>
+  
+  
 
 
+
+
+
+  
+<!--
+  
   <ion-row *ngIf="medicoes">
 
     <ion-item style="height: 280px; margin-left: -12px">
         <canvas #lineCanvas style="width:97vw; height: 280px; "></canvas>
     </ion-item>
-
-    <!--
-    <ion-row *ngIf="pieChart" style="padding: 0px; margin-top: 16px">
-      <google-chart [data]="pieChart" style="width: 100vw; padding: 0px;"></google-chart>
-    </ion-row>
--->
     <ion-item style="width: 100vw">
       <ion-label>Data inicial</ion-label>
       <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Inicial"
@@ -111,4 +158,6 @@
       <ion-button color="light" (click)="habilitaDelete(false)">Normal</ion-button>
     </ion-col>
   </ion-row>
+
+-->
 </ion-content>
