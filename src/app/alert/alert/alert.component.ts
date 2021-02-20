@@ -23,7 +23,6 @@ export class AlertComponent implements OnInit {
       private router: Router
     ) {
         const apiURL = localStorage.getItem('ipraspberry')
-
         if (apiURL) {
             this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
         }
@@ -44,6 +43,18 @@ export class AlertComponent implements OnInit {
     selecionadoData(){
         this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
     }
+
+    
+       //para fazer um refresh
+   doRefresh(event) {
+    const apiURL = localStorage.getItem('ipraspberry')
+    if (apiURL) {
+        this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+    }
+    setTimeout(() => {
+      event.target.complete();
+    }, 400);
+  }
 
 }
 

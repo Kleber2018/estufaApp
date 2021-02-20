@@ -195,4 +195,16 @@ export class MeasurementsComponent implements OnInit {
   habilitaDelete(status: boolean){
     this.admin = status
   }
+
+
+   //para fazer um refresh
+   doRefresh(event) {
+    const apiURL = localStorage.getItem('ipraspberry')
+    if (apiURL) {
+      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
+    }
+    setTimeout(() => {
+      event.target.complete();
+    }, 400);
+  }
 }

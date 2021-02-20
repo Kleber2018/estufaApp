@@ -18,6 +18,12 @@
   </ion-header>
 
   <ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content
+        pullingIcon="chevron-down-circle-outline"
+        refreshingSpinner="circles">
+      </ion-refresher-content>
+    </ion-refresher>
     <ion-item>
       <ion-label>Data inicial</ion-label>
       <ion-datetime displayFormat="DD / MMM / YY" placeholder="Data Inicial"

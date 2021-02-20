@@ -174,7 +174,20 @@ ngOnInit() {
     localStorage.setItem('alertaconfig', 'desativado')
   }
 
+  //para fazer um refresh
+  doRefresh(event) {
+    const apiURL = localStorage.getItem('ipraspberry')
+    if (apiURL) {
+      this.buscaConfig()
+      this.buscarMedicao()
+    }
+    setTimeout(() => {
+      event.target.complete();
+    }, 400);
+  }
+
   async inicializando() {
+
     const apiURL = localStorage.getItem('ipraspberry')
     if (apiURL) {
       this.buscaConfig()
