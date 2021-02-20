@@ -45,6 +45,10 @@
                     monthShortNames="jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez"
       ></ion-datetime>
     </ion-item>
+    <ion-item style="margin-top: -8px;" >
+      <ion-label>Alertas Pendentes</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="viewAlertasPendentes" (click)="selecionaCheckboxPendentes(viewAlertasPendentes)"></ion-checkbox>
+    </ion-item>
 
     <p style="opacity: 0.2">. </p>
 

@@ -17,6 +17,8 @@ export class AlertComponent implements OnInit {
     public dataFinal = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate())
     public formDataFinal = new FormControl(this.dataFinal,[]);
 
+    public viewAlertasPendentes = true
+
     constructor(
       private formBuilder: FormBuilder,
       private alertService: AlertService,
@@ -24,14 +26,22 @@ export class AlertComponent implements OnInit {
     ) {
         const apiURL = localStorage.getItem('ipraspberry')
         if (apiURL) {
-            this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+            this.buscarAlertasPendentes()
         }
     }
-
 
     ngOnInit() {}
 
     async buscarAlertas(dataI, dataF){
+        this.alertas = await this.alertService.getAlertasPeriodo(dataI, dataF).then(alertasRetorno => {
+            return alertasRetorno
+        }).catch(error => {
+            console.log('Retornou Erro de Alertas:', error);
+        })
+        console.log(this.alertas)
+    }
+
+    async buscarAlertasPendentes(){
         this.alertas = await this.alertService.getAlertas().then(alertasRetorno => {
             return alertasRetorno
         }).catch(error => {
@@ -41,20 +51,36 @@ export class AlertComponent implements OnInit {
     }
 
     selecionadoData(){
-        this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+        if(this.viewAlertasPendentes){
+            this.buscarAlertasPendentes()
+        } else {
+            this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+        }
+    }
+
+    selecionaCheckboxPendentes(vrAlertasPendentes){
+        if(vrAlertasPendentes){
+            this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+        } else {
+            this.buscarAlertasPendentes()
+        }
     }
 
     
        //para fazer um refresh
-   doRefresh(event) {
-    const apiURL = localStorage.getItem('ipraspberry')
-    if (apiURL) {
-        this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+    doRefresh(event) {
+        const apiURL = localStorage.getItem('ipraspberry')
+        if (apiURL) {
+            if(this.viewAlertasPendentes){
+                this.buscarAlertasPendentes()
+            } else {
+                this.buscarAlertas(this.formDataInic.value, this.formDataFinal.value)
+            }
+        }
+        setTimeout(() => {
+        event.target.complete();
+        }, 400);
     }
-    setTimeout(() => {
-      event.target.complete();
-    }, 400);
-  }
 
 }
 
