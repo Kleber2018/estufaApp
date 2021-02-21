@@ -21,15 +21,15 @@ ionic cordova run android -l
 
 Generate módulo com rota:
 
-```ionic g module alert-config --routing=true```
+```ionic g module help --routing=true```
 
 Generate componente em nova pasta selecionando o modulo:
 
-```ionic g component alert-config/alert-config --module=measurements```
+```ionic g component help/help --module=help```
 
 Generate service
 
-```ionic g s alert-config/alert-config```
+```ionic g s help/alert-config```
 
 
 

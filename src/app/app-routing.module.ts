@@ -30,6 +30,14 @@ const routes: Routes = [
   {
     path: 'alertas/:id',
     loadChildren: () => import('./alert/alert.module').then( m => m.AlertModule)
+  },
+  {
+    path: 'help',
+    loadChildren: () => import('./help/help.module').then( m => m.HelpModule)
+  },
+  {
+    path: 'sobre',
+    loadChildren: () => import('./help/help.module').then( m => m.HelpModule)
   }
 
 ];

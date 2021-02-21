@@ -26,12 +26,12 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Ajuda',
-      url: '/folder',
+      url: '/help/help',
       icon: 'help-circle'
     },
     {
       title: 'Sobre',
-      url: '/',
+      url: '/help/sobre',
       icon: 'alert-circle'
     },
  /*   {
