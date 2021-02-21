@@ -28,7 +28,9 @@ export class ConfigGeralComponent implements OnInit {
   ngOnInit() {}
 
   selecionaCheckboxVibrar(vrAlertaVibrar){
+    this.vrVibrar= !this.vrVibrar
     if(vrAlertaVibrar){
+
       console.log('desativando vibrar')
     } else {
       console.log('ativar vibrar')
@@ -36,6 +38,7 @@ export class ConfigGeralComponent implements OnInit {
 }
 
 selecionaCheckboxAlertas(vrAlertas){
+  this.vrAlertas= !this.vrAlertas
   if(vrAlertas){
       console.log('desativando alerta sonoro')
   } else {

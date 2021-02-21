@@ -11,18 +11,25 @@
 
 <ion-content [fullscreen]="true">
   <ion-grid>
-    <ion-row>
-      Escolher toque sonoro
-    </ion-row>
 
-      <ion-item >
-        <ion-label>Vibrar</ion-label>
-        <ion-checkbox slot="end" [(ngModel)]="vrVibrar" (click)="selecionaCheckboxVibrar(vrVibrar)"></ion-checkbox>
-      </ion-item>
-      <ion-item >
-        <ion-label>Alerta Sonoro</ion-label>
-        <ion-checkbox slot="end" [(ngModel)]="vrAlertas" (click)="selecionaCheckboxAlertas(vrAlertas)"></ion-checkbox>
-      </ion-item>
+    <ion-item>
+      <ion-label>Toques</ion-label>
+      <ion-select placeholder="Select One" [value]="2">
+        <ion-select-option value="1">Audio 1</ion-select-option>
+        <ion-select-option value="2">Audio 2</ion-select-option>
+        <ion-select-option value="3">Audio 3</ion-select-option>
+        <ion-select-option value="4">Audio 4</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item >
+      <ion-label>Vibrar</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="vrVibrar" (click)="selecionaCheckboxVibrar(vrVibrar)"></ion-checkbox>
+    </ion-item>
+    <ion-item >
+      <ion-label>Alerta Sonoro</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="vrAlertas" (click)="selecionaCheckboxAlertas(vrAlertas)"></ion-checkbox>
+    </ion-item>
   </ion-grid>
 </ion-content>
 
