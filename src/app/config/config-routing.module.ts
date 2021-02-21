@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ConfigComponent} from "./config/config.component";
+import {ConfigModComponent} from "./config-mod/config-mod.component";
 
 
 const routes: Routes = [
   {
     path: '',
-    component: ConfigComponent
+    component: ConfigModComponent
   }
 ];
 

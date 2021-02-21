@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Configurações Gerais',
-      url: '/folder',
+      url: '/help/config',
       icon: 'warning'
     },
     {

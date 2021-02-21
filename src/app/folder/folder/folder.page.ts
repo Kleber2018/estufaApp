@@ -22,6 +22,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Chart } from 'chart.js';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
+import { Config } from 'src/app/shared/model/config.model';
 
 @Component({
   selector: 'app-folder',
@@ -32,6 +33,30 @@ export class FolderPage implements OnInit {
 
   public admin: boolean = false;
   public alertaAtivado = false;
+  public configLocal: Config = {
+    guarda: '',
+    vibrar: '',
+    toque: '',
+    modulos: [{
+      identificacao: '', //Estufa Amarela
+      guarda: '', // 1 / 0
+      usuario: '', // para login
+      token: '', // retornado pelo raspberry
+      created: '',// data da criação
+      ip: '', // 192.168.1.105:5000
+      alertaParams:{
+        id_config: '',
+        intervalo_seconds: 0,
+        obs: '',
+        temp_max: 0,
+        temp_min: 0,
+        umid_max: 0,
+        umid_min: 0,
+        updated: ''
+      }
+    }]
+
+  }
 
   public folder: string;
 
@@ -299,7 +324,6 @@ ngOnInit() {
 
   buscarMedicao() {
     this.folderService.getMedicao().then(med => {
-      console.log('medicao', med)
       this.buildViewMedicao(med[0])
     }).catch(error => {
       console.log('Retornou Erro de Mediçao:', error);
@@ -409,7 +433,6 @@ ngOnInit() {
   async executarNative(descricao: string){
     
     const alertaConfig = localStorage.getItem('alertaconfig') // se existir é pq o alerta está ativado
-    console.log(alertaConfig)
     if (alertaConfig) {
       if(alertaConfig == 'ativado'){
         this.localNotifications.schedule({

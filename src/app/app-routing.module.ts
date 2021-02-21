@@ -33,11 +33,15 @@ const routes: Routes = [
   },
   {
     path: 'help',
-    loadChildren: () => import('./help/help.module').then( m => m.HelpModule)
+    loadChildren: () => import('./geral/geral.module').then( m => m.GeralModule)
   },
   {
     path: 'sobre',
-    loadChildren: () => import('./help/help.module').then( m => m.HelpModule)
+    loadChildren: () => import('./geral/geral.module').then( m => m.GeralModule)
+  },
+  {
+    path: 'config',
+    loadChildren: () => import('./geral/geral.module').then( m => m.GeralModule)
   }
 
 ];

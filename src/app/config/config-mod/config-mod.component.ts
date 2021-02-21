@@ -1,23 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import {ConfigService} from "../config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import {LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
-import { NetworkInterface } from '@ionic-native/network-interface/ngx';
-import { splitAtColon } from '@angular/compiler/src/util';
 import { ModalController } from '@ionic/angular';
 
 import {ModalScanPage} from '../modal-scan/modal-scan.page'
 import { Config } from 'src/app/shared/model/config.model';
 
-
 @Component({
-  selector: 'app-config',
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.scss'],
+  selector: 'app-config-mod',
+  templateUrl: './config-mod.component.html',
+  styleUrls: ['./config-mod.component.scss'],
 })
 
-export class ConfigComponent implements OnInit {
+export class ConfigModComponent implements OnInit {
 
   public formIP: FormGroup;
   public config: Config;

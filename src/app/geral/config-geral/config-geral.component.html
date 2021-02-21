@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <!-- <ion-title>{{ folder }}</ion-title>-->
+    <!-- <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button> -->
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      Escolher toque sonoro
+    </ion-row>
+
+      <ion-item >
+        <ion-label>Vibrar</ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="vrVibrar" (click)="selecionaCheckboxVibrar(vrVibrar)"></ion-checkbox>
+      </ion-item>
+      <ion-item >
+        <ion-label>Alerta Sonoro</ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="vrAlertas" (click)="selecionaCheckboxAlertas(vrAlertas)"></ion-checkbox>
+      </ion-item>
+  </ion-grid>
+</ion-content>
+
+
