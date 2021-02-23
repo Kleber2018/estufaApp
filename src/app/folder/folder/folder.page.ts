@@ -66,7 +66,8 @@ export class FolderPage implements OnInit {
     temp: 0,
     temp_status: '',//baixo, alto
     umid: 0,
-    umid_status: '' //baixo, alto
+    umid_status: '', //baixo, alto
+    createdAt: ''
   }
 
 
@@ -325,6 +326,7 @@ ngOnInit() {
   buscarMedicao() {
     this.folderService.getMedicao().then(med => {
       this.buildViewMedicao(med[0])
+      console.log(med[0])
     }).catch(error => {
       console.log('Retornou Erro de Mediçao:', error);
     })
@@ -335,6 +337,12 @@ ngOnInit() {
 
   buildViewMedicao(med: any){
     if(this.config){
+      var spl = med.Data.split(' ')
+      var spl1 = spl[0].split('-')
+      var spl2 = spl[1].split(':')
+      console.log()
+
+      this.medicao.createdAt = `${spl1[2]}/${spl1[1]} - ${spl2[0]}:${spl2[1]}`
       this.medicao.temp = med.Temperatura
       this.medicao.umid = med.Umidade
 

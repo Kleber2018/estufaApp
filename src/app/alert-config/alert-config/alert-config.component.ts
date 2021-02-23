@@ -53,12 +53,13 @@ export class AlertConfigComponent implements OnInit {
               localStorage.setItem('configraspberry', JSON.stringify(this.config))
 
               this.formConfig = this.formBuilder.group({
-                  intervalo_seconds: [this.config.intervalo_seconds, [Validators.required]],
-                  temp_min: [this.config.temp_min, [Validators.required]],
-                  temp_max: [this.config.temp_max, [Validators.required]],
-                  umid_min: [this.config.umid_min, [Validators.required]],
-                  umid_max: [this.config.umid_max, [Validators.required]],
-                  obs: [this.config.obs, [Validators.required]],
+                    etapa: ['Personalizada', [Validators.required]],
+                    intervalo_seconds: [this.config.intervalo_seconds, [Validators.required]],
+                    temp_min: [this.config.temp_min, [Validators.required]],
+                    temp_max: [this.config.temp_max, [Validators.required]],
+                    umid_min: [this.config.umid_min, [Validators.required]],
+                    umid_max: [this.config.umid_max, [Validators.required]],
+                    obs: [this.config.obs],
               })
           }
 
@@ -72,9 +73,86 @@ export class AlertConfigComponent implements OnInit {
       )
   }
 
+
+  private rebuildFormConfig(valores){
+    this.formConfig = this.formBuilder.group({
+        etapa: [valores.etapa, [Validators.required]],
+        intervalo_seconds: [valores.intervalo_seconds, [Validators.required]],
+        temp_min: [valores.temp_min, [Validators.required]],
+        temp_max: [valores.temp_max, [Validators.required]],
+        umid_min: [valores.umid_min, [Validators.required]],
+        umid_max: [valores.umid_max, [Validators.required]],
+        obs: [valores.obs]
+  })
+  }
+
+  public etapa = ''
+
+    escolheEtapa(etapa){
+        if(etapa == 'Personalizada'){
+            this.rebuildFormConfig({
+                intervalo_seconds: this.config.intervalo_seconds,
+                temp_min: 140,
+                temp_max: 165,
+                umid_min: 25,
+                umid_max: 10,
+                obs: this.config.obs,
+                etapa: etapa
+            })
+        } else if(etapa == 'Secagem do Talo'){
+            this.rebuildFormConfig({
+                intervalo_seconds: this.config.intervalo_seconds,
+                temp_min: 141,
+                temp_max: 165,
+                umid_min: 25,
+                umid_max: 10,
+                obs: this.config.obs,
+                etapa: etapa
+            })          
+        } else if(etapa == 'Secagem da Folha'){
+            this.rebuildFormConfig({
+                intervalo_seconds: this.config.intervalo_seconds,
+                temp_min: 121,
+                temp_max: 140,
+                umid_min: 25,
+                umid_max: 44,
+                obs: this.config.obs,
+                etapa: etapa
+            })
+        } else if(etapa == 'Murchamento'){
+            this.rebuildFormConfig({
+                intervalo_seconds: this.config.intervalo_seconds,
+                temp_min: 101,
+                temp_max: 120,
+                umid_min: 45,
+                umid_max: 79,
+                obs: this.config.obs,
+                etapa: etapa
+            })
+        } else if(etapa == 'Amarelacao'){
+            this.rebuildFormConfig({
+                intervalo_seconds: this.config.intervalo_seconds,
+                temp_min: 90,
+                temp_max: 100,
+                umid_min: 81,
+                umid_max: 98,
+                obs: this.config.obs,
+                etapa: etapa
+            })
+        }  
+    }
+
     submitConfig(){
         console.log(this.formConfig.value)
-      this.alertConfigService.updateConfig(this.formConfig.value).then(r => {
+
+      this.alertConfigService.updateConfig({
+                intervalo_seconds: this.formConfig.value.intervalo_seconds,
+                temp_min: this.formConfig.value.temp_min,
+                temp_max: this.formConfig.value.temp_max,
+                umid_min: this.formConfig.value.umid_min,
+                umid_max: this.formConfig.value.umid_max,
+                obs: this.formConfig.value.obs
+            }).then(r => {
           if(r){
               if(r.retorno == 'salvo'){
                   alert(r.retorno)
