@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {ConfigService} from "../config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
 
 import {ModalScanPage} from '../modal-scan/modal-scan.page'
 import { Config } from 'src/app/shared/model/config.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-config-mod',
@@ -13,58 +14,60 @@ import { Config } from 'src/app/shared/model/config.model';
   styleUrls: ['./config-mod.component.scss'],
 })
 
-export class ConfigModComponent implements OnInit {
+export class ConfigModComponent implements OnInit, OnDestroy {
 
-  public formIP: FormGroup;
-  public config: Config;
-  public apiURL
+    private end: Subject<boolean> = new Subject();
 
-    public alertaAtivado = false
-  constructor(
-      private formBuilder: FormBuilder,
-      private configService: ConfigService,
-      private router: Router,
-      public modalController: ModalController
-  ) {
-         this.inicializar()
-  }
+    public formIP: FormGroup;
+    public config: Config;
+    public apiURL
 
-  ngOnInit() {}
-
-
-  async inicializar(){
-    const alertaConfig = localStorage.getItem('alertaconfig')
-    if (alertaConfig) {
-        this.alertaAtivado = true
-    } else {
-        this.alertaAtivado = false
+        public alertaAtivado = false
+    constructor(
+        private formBuilder: FormBuilder,
+        private configService: ConfigService,
+        private router: Router,
+        public modalController: ModalController
+    ) {
+        this.inicializar()
     }
 
-    this.apiURL = localStorage.getItem('ipraspberry')
-    if(this.apiURL){
-    const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
-        if(vr){
-            console.log('encontrado')
+    ngOnInit() {}
+
+
+    async inicializar(){
+        const alertaConfig = localStorage.getItem('alertaconfig')
+        if (alertaConfig) {
+            this.alertaAtivado = true
+        } else {
+            this.alertaAtivado = false
+        }
+
+        this.apiURL = localStorage.getItem('ipraspberry')
+        if(this.apiURL){
+        const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
+            if(vr){
+                console.log('encontrado')
+            }
         }
     }
-  }
 
 
-  public datetimeDispositivo
-  public datetimeCelular
+    public datetimeDispositivo
+    public datetimeCelular
 
-  buscarDataRapsberry(){
-     this.configService.getDateTimeRaspberry().then(r => {
-          console.log(r);
-         this.datetimeDispositivo = r
-         this.datetimeCelular = new Date()
-      })
-}
+    buscarDataRapsberry(){
+        this.configService.getDateTimeRaspberry().then(r => {
+            console.log(r);
+            this.datetimeDispositivo = r
+            this.datetimeCelular = new Date()
+        })
+    }
 
-// atualizar a data do raspberry igual ao do dispositivo
-atualizarDataRaspberry(){
-    this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
-}
+    // atualizar a data do raspberry igual ao do dispositivo
+    atualizarDataRaspberry(){
+        this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
+    }
 
 
 
@@ -108,8 +111,15 @@ atualizarDataRaspberry(){
                     }
                 }
             }
-            })
+        })
     }
+
+    ngOnDestroy(): void {
+        console.log('onDestroy')
+        this.end.next();
+        this.end.complete();
+    }
+
 }
 
 

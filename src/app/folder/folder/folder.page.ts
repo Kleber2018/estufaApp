@@ -1,25 +1,20 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FolderService} from "../folder.service";
-import { GoogleChartInterface } from 'ng2-google-charts';
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 
 import { Animation, AnimationController, AlertController } from '@ionic/angular';
+import {  takeUntil } from 'rxjs/operators';
 
-import { LoadingController } from '@ionic/angular';
 
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { Platform } from '@ionic/angular';
 
-import {ConfigService} from "../../config/config.service";
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Subject, timer } from 'rxjs';
 
-
-
-
-import { Chart } from 'chart.js';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 import { Config } from 'src/app/shared/model/config.model';
@@ -29,7 +24,7 @@ import { Config } from 'src/app/shared/model/config.model';
   templateUrl: './folder.page.html',
   styleUrls: ['./folder.page.scss'],
 })
-export class FolderPage implements OnInit {
+export class FolderPage implements OnInit, OnDestroy {
 
   public admin: boolean = false;
   public alertaAtivado = false;
@@ -85,13 +80,10 @@ export class FolderPage implements OnInit {
   };*/
   customPickerOptions: any;
 
-  public dataInic = (new Date().getFullYear())+'-'+(new Date().getMonth())+'-'+(new Date().getDate()-2)
-  public formDataInic = new FormControl(this.dataInic,[]);
 
-  public dataFinal = (new Date().getFullYear())+'-'+(new Date().getMonth()+1)+'-'+(new Date().getDate())
-  public formDataFinal = new FormControl(this.dataFinal,[]);
-
-
+  private end: Subject<boolean> = new Subject();
+  private temperaturaAnimation: Animation;
+  private umidadeAnimation: Animation;
  // @ViewChild('alertaPiscando', { read: ElementRef }) alertaPiscando: ElementRef;
   @ViewChild('umidAnimation', { read: ElementRef }) umidAnimation: ElementRef;
   @ViewChild('tempAnimation', { read: ElementRef }) tempAnimation: ElementRef;
@@ -109,7 +101,7 @@ export class FolderPage implements OnInit {
                     private pdfGenerator: PDFGenerator
                     ) {
                       this.admin = false
-
+                      /*
     this.customPickerOptions = {
       buttons: [{
         text: 'Buscar',
@@ -121,36 +113,22 @@ export class FolderPage implements OnInit {
           return false;
         }
       }]
-    }
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-    //range de dias
-    var intervaloDias = localStorage.getItem('intervaloDias')
-        ? JSON.parse(localStorage.getItem('intervaloDias'))
-        : null;
-
-    if (!intervaloDias) {
-      intervaloDias = 60
-    }
-    var d = new Date();
-    d.setDate(d.getDate() - intervaloDias);
-    this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-    this.formDataInic = new FormControl(this.dataInic, []);
+    }*/  
+  
      // set status bar to white
       //this.statusBar.backgroundColorByHexString('#339933');
 
        // The Native Audio plugin can only be called once the platform is ready
     this.localNotifications.requestPermission()
     this.platform.ready().then(() => { 
-      var isAcceptedObservable = this.localNotifications.on('silenciar').subscribe(res =>{
+      var isAcceptedObservable = this.localNotifications.on('silenciar').pipe(takeUntil(this.end)).subscribe(res =>{
         this.pararNative();
         console.log('Silenciando através do push');  
       });
     //alert('platform')      
     this.nativeAudio.preloadSimple('uniqueId1', 'assets/audio4.mp3')
     this.nativeAudio.preloadComplex('uniqueId2', 'assets/audio4.mp3', 1, 1, 0)
-
       //  this.nativeAudio.play('uniqueId1')
-
         /*
         // This is used to unload the track. It's useful if you're experimenting with track locations
         this.nativeAudio.unload('trackID').then(function() {
@@ -172,7 +150,33 @@ export class FolderPage implements OnInit {
         */
         
       });
-    this.inicializando()
+    
+      
+
+      //inicializando
+      const apiURL = localStorage.getItem('ipraspberry')
+      if (apiURL) {
+        this.buscaConfig()
+        this.buscarMedicao()
+        this.interval()
+      
+        //loop para requisitar informações a cada 60000 (60 segundos)
+        /*
+        setInterval(function () {
+              this.buscaConfig()
+              this.buscarMedicao()
+              // para que o array de medição não seja atualizado com tanta frequencia
+            }.bind(this),
+            70000);
+          */
+        //para atrasar a inicialização da animação
+        /*
+        setTimeout(() => {
+              this.startAnimaTempUmid()
+              console.log('animando')
+            },
+            1500);*/
+      }
   }
 
 ngOnInit() {
@@ -212,31 +216,40 @@ ngOnInit() {
     }, 400);
   }
 
-  async inicializando() {
 
-    const apiURL = localStorage.getItem('ipraspberry')
-    if (apiURL) {
-      this.buscaConfig()
-      this.buscarMedicao()
-      //loop para requisitar informações a cada 60000 (60 segundos)
-      setInterval(function () {
-            this.buscaConfig()
-            this.buscarMedicao()
-            // para que o array de medição não seja atualizado com tanta frequencia
-          }.bind(this),
-          70000);
-      //para atrasar a inicialização da animação
-      setTimeout(() => {
-            this.startAnimaTempUmid()
-          },
-          1500);
-    }
+
+  public timerSubscription
+
+  interval() {
+    const source = timer(3000, 6000);
+    //Timer subscription é só uma variável pra que possa destruir o timer depois
+    this.timerSubscription = source.pipe(takeUntil(this.end)).subscribe(t => { 
+      console.log(((t+1) % 7))
+      if( ((t+1) % 9) == 0 ){
+        this.buscaConfig()
+      }
+        this.buscarMedicao() // ele verifica se ainda está carregando pra poder fazer uma nova requisição
+        console.log('animation', this.temperaturaAnimation)
+        
+        if( ((t+1) % 3) == 0 ){
+          this.startAnimaTempUmid()
+        }
+    });
   }
 
   startAnimaTempUmid(){
-    //animação
+
+
+    if(this.temperaturaAnimation){
+      this.temperaturaAnimation.destroy()
+    }
+
+    if(this.umidadeAnimation){
+      this.umidadeAnimation.destroy()
+    }
+
     if(this.medicao.temp_status == 'alto'){
-      const temperaturaAnimation: Animation = this.animationCtrl.create('temp-animation')
+      this.temperaturaAnimation = this.animationCtrl.create('temp-animation')
           .addElement(this.tempAnimation.nativeElement)
           .iterations(Infinity)
           .duration(2700)
@@ -246,9 +259,9 @@ ngOnInit() {
             { offset: 0.72, background: 'red' },
             { offset: 1, background: 'var(--background)' }
           ]);
-      temperaturaAnimation.play()
+      this.temperaturaAnimation.play()
     } else if (this.medicao.temp_status == 'baixo'){
-      const temperaturaAnimation: Animation = this.animationCtrl.create('temp-animation')
+      this.temperaturaAnimation = this.animationCtrl.create('temp-animation')
           .addElement(this.tempAnimation.nativeElement)
           .iterations(Infinity)
           .duration(2700)
@@ -258,11 +271,12 @@ ngOnInit() {
             { offset: 0.72, background: 'purple' },
             { offset: 1, background: 'var(--background)' }
           ]);
-      temperaturaAnimation.play()
+      this.temperaturaAnimation.play()
     }
 
     if(this.medicao.umid_status == 'alto'){
-      const umidadeAnimation: Animation = this.animationCtrl.create('umid-animation')
+      
+      this.umidadeAnimation = this.animationCtrl.create('umid-animation')
           .addElement(this.umidAnimation.nativeElement)
           .iterations(Infinity)
           .duration(2700)
@@ -272,9 +286,9 @@ ngOnInit() {
             { offset: 0.72, background: 'red' },
             { offset: 1, background: 'var(--background)' }
           ]);
-      umidadeAnimation.play()
+          this.umidadeAnimation.play()
     } else if(this.medicao.umid_status == 'baixo'){
-      const umidadeAnimation: Animation = this.animationCtrl.create('umid-animation')
+      this.umidadeAnimation = this.animationCtrl.create('umid-animation')
           .addElement(this.umidAnimation.nativeElement)
           .iterations(Infinity)
           .duration(2700)
@@ -284,7 +298,7 @@ ngOnInit() {
             { offset: 0.72, background: 'purple' },
             { offset: 1, background: 'var(--background)' }
           ]);
-      umidadeAnimation.play()
+      this.umidadeAnimation.play()
     }
   }
 
@@ -381,26 +395,23 @@ ngOnInit() {
 
 
   buscaConfig(){
-    this.config = JSON.parse(localStorage.getItem('configraspberry'))
-    if(!this.config){
-      this.alertConfigService.getConfig().then(configRetorno => {
-        if(configRetorno){
-          if(Array.isArray(configRetorno)){
-            this.config = configRetorno[0];
-          } else {
-            this.config = configRetorno;
-          }
-          localStorage.setItem('configraspberry', JSON.stringify(this.config))
+    this.alertConfigService.getConfig().then(configRetorno => {
+      if(configRetorno){
+        if(Array.isArray(configRetorno)){
+          this.config = configRetorno[0];
+        } else {
+          this.config = configRetorno;
         }
-      }).catch(error => {
-            if (error.error){
-              console.log('Retornou Erro:',error.error);
-            } else {
-              console.log('Retornou Erro:',error);
-            }
+        localStorage.setItem('configraspberry', JSON.stringify(this.config))
+      }
+    }).catch(error => {
+          if (error.error){
+            console.log('Retornou Erro de configuração',error.error);
+          } else {
+            console.log('Retornou Erro de configuração:',error);
           }
-      )
-    }
+        }
+    )
   }
 
 
@@ -411,10 +422,10 @@ ngOnInit() {
   testarAlerta(){
     //teste quando o app está em background ou não
     this.platform.ready().then(() => {
-      this.platform.pause.subscribe(() => {        
+      this.platform.pause.pipe(takeUntil(this.end)).subscribe(() => {        
           console.log('****UserdashboardPage PAUSED****');
       });  
-      this.platform.resume.subscribe(() => {      
+      this.platform.resume.pipe(takeUntil(this.end)).subscribe(() => {      
           console.log('****UserdashboardPage RESUMED****');
       });
      });
@@ -500,6 +511,13 @@ ngOnInit() {
     this.nativeAudio.stop('uniqueId2')
     this.vibration.vibrate(0);
    // this.nativeAudio.unload('uniqueId1')
+  }
+
+  ngOnDestroy(): void {
+    console.log('onDestroy')
+    this.end.next();
+    this.end.complete();
+    this.pararNative()
   }
 
 }

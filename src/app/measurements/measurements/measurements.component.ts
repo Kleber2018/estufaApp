@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MeasurementsService } from '../measurements.service';
 
@@ -6,14 +6,15 @@ import { Chart } from 'chart.js';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { GoogleChartInterface } from 'ng2-google-charts';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-measurements',
   templateUrl: './measurements.component.html',
   styleUrls: ['./measurements.component.scss'],
 })
-export class MeasurementsComponent implements OnInit {
+export class MeasurementsComponent implements OnInit, OnDestroy {
 
-
+  private end: Subject<boolean> = new Subject();
   lineChart: any;
 
   public admin: boolean = false;
@@ -198,7 +199,7 @@ export class MeasurementsComponent implements OnInit {
 
 
    //para fazer um refresh
-   doRefresh(event) {
+  doRefresh(event) {
     const apiURL = localStorage.getItem('ipraspberry')
     if (apiURL) {
       this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
@@ -206,5 +207,11 @@ export class MeasurementsComponent implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 400);
+  }
+
+  ngOnDestroy(): void {
+    console.log('onDestroy')
+    this.end.next();
+    this.end.complete();
   }
 }

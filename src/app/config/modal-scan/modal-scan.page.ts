@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { AlertController, ModalController } from '@ionic/angular';
+import { Subject } from 'rxjs';
 import { ConfigService } from '../config.service';
 
 @Component({
@@ -9,7 +10,9 @@ import { ConfigService } from '../config.service';
   templateUrl: './modal-scan.page.html',
   styleUrls: ['./modal-scan.page.scss'],
 })
-export class ModalScanPage implements OnInit {
+export class ModalScanPage implements OnInit, OnDestroy {
+
+  private end: Subject<boolean> = new Subject();
 
   public formIP: FormGroup;
 
@@ -163,5 +166,11 @@ export class ModalScanPage implements OnInit {
   pararScanRede(){
     this.indexScan = 255
     this.scanDispositivo = false
+  }
+
+  ngOnDestroy(): void {
+    console.log('onDestroy')
+    this.end.next();
+    this.end.complete();
   }
 }

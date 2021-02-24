@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {ConfigService} from "../../config/config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
 
 
 import { Config } from 'src/app/shared/model/config.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-config-geral',
@@ -13,7 +14,9 @@ import { Config } from 'src/app/shared/model/config.model';
   styleUrls: ['./config-geral.component.scss'],
 })
 
-export class ConfigGeralComponent implements OnInit {
+export class ConfigGeralComponent implements OnInit, OnDestroy {
+
+  private end: Subject<boolean> = new Subject();
 
   public vrAlertas: boolean = true
   public vrVibrar: boolean = true
@@ -35,17 +38,22 @@ export class ConfigGeralComponent implements OnInit {
     } else {
       console.log('ativar vibrar')
     }
-}
-
-selecionaCheckboxAlertas(vrAlertas){
-  this.vrAlertas= !this.vrAlertas
-  if(vrAlertas){
-      console.log('desativando alerta sonoro')
-  } else {
-    console.log('ativando alerta sonoro')
   }
-}
 
+  selecionaCheckboxAlertas(vrAlertas){
+    this.vrAlertas= !this.vrAlertas
+    if(vrAlertas){
+        console.log('desativando alerta sonoro')
+    } else {
+      console.log('ativando alerta sonoro')
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('onDestroy')
+    this.end.next();
+    this.end.complete();
+  }
 
 
 }

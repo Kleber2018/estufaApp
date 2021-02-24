@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
 import { AlertConfigService } from '../alert-config.service';
 
@@ -9,7 +10,9 @@ import { AlertConfigService } from '../alert-config.service';
   templateUrl: './alert-config.component.html',
   styleUrls: ['./alert-config.component.scss'],
 })
-export class AlertConfigComponent implements OnInit {
+export class AlertConfigComponent implements OnInit, OnDestroy {
+
+    private end: Subject<boolean> = new Subject();
 
   public formConfig: FormGroup;
   public config: any;
@@ -18,13 +21,12 @@ export class AlertConfigComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private alertConfigService: AlertConfigService,
-      private configService: ConfigService,
       private router: Router
   ) {
     //this.inicializando()
     this.buildFormConfig()
   }
-
+    
   ngOnInit() {}
 
   /*
@@ -167,4 +169,9 @@ export class AlertConfigComponent implements OnInit {
     }
 
 
+    ngOnDestroy(): void {
+        console.log('onDestroy')
+        this.end.next();
+        this.end.complete();
+    }
 }
