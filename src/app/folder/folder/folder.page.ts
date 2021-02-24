@@ -329,6 +329,13 @@ ngOnInit() {
       console.log(med[0])
     }).catch(error => {
       console.log('Retornou Erro de Mediçao:', error);
+      this.medicao = {
+        temp: 0,
+        temp_status: '',//baixo, alto
+        umid: 0,
+        umid_status: '', //baixo, alto
+        createdAt: ''
+      }
     })
   }
 

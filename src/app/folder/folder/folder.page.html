@@ -38,6 +38,7 @@
           <ion-row class='temp-umid-valor' #tempAnimation>
             <ion-icon name="thermometer-outline"></ion-icon>
             <ion-label>{{ medicao.temp }}</ion-label>
+            <ion-icon *ngIf="medicao.temp == 0" name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
           </ion-row>
           <ion-row >
             <ion-label class="txt-temp-umid">{{medicao.temp_status}}</ion-label>
@@ -50,6 +51,7 @@
           <ion-row class='temp-umid-valor' #umidAnimation>
             <ion-icon name="water-outline"></ion-icon>
             <ion-label>{{ medicao.umid }}</ion-label>
+            <ion-icon *ngIf="medicao.umid == 0" name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
           </ion-row>
           <ion-row>
             <ion-label class="txt-temp-umid">{{medicao.umid_status}}</ion-label>
@@ -58,6 +60,10 @@
     </ion-item>
     <ion-row class="ion-justify-content-end">
       {{medicao.createdAt}}
+    </ion-row>
+    <ion-row class="ion-justify-content-end" *ngIf="(medicao.umid == 0 && medicao.temp == 0)">
+      <ion-icon  name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
+      <ion-label>Erro de conexão</ion-label>
     </ion-row>
 
     <ion-item class="ion-activated ion-justify-content-center" >

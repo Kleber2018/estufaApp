@@ -90,3 +90,20 @@
         <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
       </ion-row>
 </ion-content>
+
+
+<ion-content *ngIf="!formConfig">
+  <ion-row style="margin: 16px 8px;" class="ion-justify-content-center" >
+    <ion-text >Erro de conexão</ion-text>
+  </ion-row>
+  <ion-row  style="margin: 8px;">
+    <ion-text> - Verifique se você está na mesma rede do disposítivo</ion-text>
+  </ion-row>
+  <ion-row  style="margin: 8px;">
+    <ion-text>- Desative os dados móveis da operadora</ion-text>
+  </ion-row>
+  <ion-row class="ion-justify-content-center" style="margin: 16px">
+    <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
+  </ion-row>
+
+</ion-content>
