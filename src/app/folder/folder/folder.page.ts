@@ -159,6 +159,7 @@ export class FolderPage implements OnInit, OnDestroy {
         this.buscaConfig()
         this.buscarMedicao()
         this.interval()
+        this.notificacaoExecucao()
       
         //loop para requisitar informações a cada 60000 (60 segundos)
         /*
@@ -210,6 +211,7 @@ ngOnInit() {
     if (apiURL) {
       this.buscaConfig()
       this.buscarMedicao()
+      this.notificacaoExecucao()
     }
     setTimeout(() => {
       event.target.complete();
@@ -221,33 +223,22 @@ ngOnInit() {
   public timerSubscription
 
   interval() {
-    const source = timer(3000, 6000);
-    //Timer subscription é só uma variável pra que possa destruir o timer depois
-    this.timerSubscription = source.pipe(takeUntil(this.end)).subscribe(t => { 
-      console.log(((t+1) % 7))
+    const source = timer(30000, 60000);
+    this.timerSubscription = source.pipe(takeUntil(this.end)).subscribe(t => { //Timer subscription é só uma variável pra que possa destruir o timer depois
       if( ((t+1) % 9) == 0 ){
         this.buscaConfig()
       }
-        this.buscarMedicao() // ele verifica se ainda está carregando pra poder fazer uma nova requisição
-        console.log('animation', this.temperaturaAnimation)
-        
-        if( ((t+1) % 3) == 0 ){
-          this.startAnimaTempUmid()
-        }
+      this.buscarMedicao() // ele verifica se ainda está carregando pra poder fazer uma nova requisição
     });
   }
 
   startAnimaTempUmid(){
-
-
     if(this.temperaturaAnimation){
       this.temperaturaAnimation.destroy()
     }
-
     if(this.umidadeAnimation){
       this.umidadeAnimation.destroy()
     }
-
     if(this.medicao.temp_status == 'alto'){
       this.temperaturaAnimation = this.animationCtrl.create('temp-animation')
           .addElement(this.tempAnimation.nativeElement)
@@ -275,7 +266,6 @@ ngOnInit() {
     }
 
     if(this.medicao.umid_status == 'alto'){
-      
       this.umidadeAnimation = this.animationCtrl.create('umid-animation')
           .addElement(this.umidAnimation.nativeElement)
           .iterations(Infinity)
@@ -453,6 +443,20 @@ ngOnInit() {
     },
     
     6000);
+  }
+
+  notificacaoExecucao(){
+    this.localNotifications.schedule({
+      id: 1,
+      title: 'Estufa App',
+      text:  'Monitorameto está em Execução',
+      foreground: true,
+      smallIcon: 'res://ic_launcher',
+      icon: 'res://ic_launcher',//'http://estufa.com/assets/icon/favicon.png',
+      actions: [
+        { id: 'Abrir', title: 'SILENCIAR' }
+      ]
+    });
   }
 
 
