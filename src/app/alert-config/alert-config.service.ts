@@ -12,11 +12,9 @@ export class AlertConfigService {
 
   constructor(private http : HttpClient) { }
 
-  getConfig(){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
-    return this.http.get<any>('http://'+ this.apiURL+'/apiconfig',{headers: this.headers}).toPromise();
+  getConfig(ip: string, token: string){
+    let param: any = {token: token};
+    return this.http.get<any>('http://'+ ip+'/apiconfig',{headers: this.headers, params: param}).toPromise();
   }
 
   updateConfig(configuracao: any){

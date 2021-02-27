@@ -33,11 +33,9 @@ export class FolderService {
   }
 
   // para ter a medição mais atualizada para mostrar no header
-  getMedicao(){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
-    return this.http.get<any>('http://'+this.apiURL+'/medicao',{headers: this.headers}).toPromise();
+  getMedicao(ip:string, token: string){
+    let param: any = {token: token};
+    return this.http.get<any>('http://'+ ip +'/medicao',{headers: this.headers, params: param}).toPromise();
   }
 
 
