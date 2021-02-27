@@ -17,7 +17,7 @@
 
 
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" *ngIf="configModulo.modulos">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
@@ -25,8 +25,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-<ion-row *ngFor="let modulo of configLocal.modulos">
-  <app-card-estufa style="width: 100vw;" [dadosModulo]="modulo"></app-card-estufa>
-</ion-row>
-
+  <ion-row *ngFor="let modulo of configModulo.modulos; let i = index">
+    <app-card-estufa style="width: 100vw; margin-block-end: -12px;" [dadosModulo]="modulo"  [positionArray]="i"></app-card-estufa>
+  </ion-row>
 </ion-content>

@@ -8,7 +8,7 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
-import { Modulo } from 'src/app/shared/model/config.model';
+import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../folder.service';
 
 
@@ -28,6 +28,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
   @ViewChild('tempAnimation', { read: ElementRef }) tempAnimation: ElementRef;
 
   @Input() public dadosModulo : Modulo;
+  @Input() public positionArray : number;
 
   public alertaAtivado = false;
   public config: any;
@@ -85,15 +86,21 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('dados dentro', this.dadosModulo)
+    console.log('dados dentro', this.dadosModulo, 'index', this.positionArray)
     this.inicializar(this.dadosModulo)
    }
 
    inicializar(dadosEstufa: Modulo){
     this.buscaConfig(dadosEstufa.ip, dadosEstufa.token)
-    this.buscarMedicao(dadosEstufa.ip, dadosEstufa.token)
-    this.interval(dadosEstufa.ip, dadosEstufa.token)
+    this.buscarMedicao(dadosEstufa.ip, dadosEstufa.token, dadosEstufa.guarda)
+    this.interval(dadosEstufa.ip, dadosEstufa.token, dadosEstufa.guarda)
     this.notificacaoExecucao()
+
+    if(this.dadosModulo.guarda == '1'){
+      this.alertaAtivado = true
+    } else {
+      this.alertaAtivado = false
+    }
 
     //loop para requisitar informações a cada 60000 (60 segundos)
         /*
@@ -125,34 +132,46 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
     this.router.navigate([`/alertas/${id}`]);
   }
 
-  ativarAlerta(id){
+  ativarAlerta(){
     this.alertaAtivado = true
-    localStorage.setItem('alertaconfig', 'ativado')
+    const configMod: Config = localStorage.getItem('estufaapp')
+        ? JSON.parse(localStorage.getItem('estufaapp'))
+        : null;
+    if(configMod){
+      configMod.modulos[this.positionArray].guarda = '1'
+      localStorage.setItem('estufaapp', JSON.stringify(configMod))
+    }
   }
 
-  desativarAlerta(id){
+  desativarAlerta(){
     this.alertaAtivado = false
-    localStorage.setItem('alertaconfig', 'desativado')
+    const configMod: Config = localStorage.getItem('estufaapp')
+        ? JSON.parse(localStorage.getItem('estufaapp'))
+        : null;
+    if(configMod){
+      configMod.modulos[this.positionArray].guarda = '0'
+      localStorage.setItem('estufaapp', JSON.stringify(configMod))
+    }
   }
 
 
 
   public timerSubscription
-  interval(ip: string, token: string) {
+  interval(ip: string, token: string, guarda: string) {
     const source = timer(30000, 60000);
     this.timerSubscription = source.pipe(takeUntil(this.end)).subscribe(t => { //Timer subscription é só uma variável pra que possa destruir o timer depois
       if( ((t+1) % 9) == 0 ){
         this.buscaConfig(ip, token)
       }
-      this.buscarMedicao(ip, token) // ele verifica se ainda está carregando pra poder fazer uma nova requisição
+      this.buscarMedicao(ip, token, guarda) // ele verifica se ainda está carregando pra poder fazer uma nova requisição
     });
   }
 
 
 
-  buscarMedicao(ip: string, token: string) {
+  buscarMedicao(ip: string, token: string, guarda: string) {
     this.folderService.getMedicao(ip, token).then(med => {
-      this.buildViewMedicao(med[0])
+      this.buildViewMedicao(med[0], guarda)
       console.log(med[0])
     }).catch(error => {
       console.log('Retornou Erro de Mediçao:', error);
@@ -168,7 +187,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
 
 
 
-  buildViewMedicao(med: any){
+  buildViewMedicao(med: any, guarda: string){
     if(this.config){
       var spl = med.Data.split(' ')
       var spl1 = spl[0].split('-')
@@ -178,26 +197,27 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
       this.medicao.umid = med.Umidade
       if(med.Temperatura > this.config.temp_max){
         this.medicao.temp_status = "alto"
-        this.executarNative('Temperatura alta')
+        this.executarNative('Temperatura alta', guarda)
       } else if(med.Temperatura < this.config.temp_min ){
         this.medicao.temp_status = "baixo"
         if(med.Temperatura > 0){
-          this.executarNative('Temperatura baixa')
+          this.executarNative('Temperatura baixa', guarda)
         }
       } else {
         this.medicao.temp_status = ""
       }
       if(med.Umidade > this.config.umid_max){
         this.medicao.umid_status = "alto"
-        this.executarNative('Umidade alta')
+        this.executarNative('Umidade alta', guarda)
       } else if(med.Umidade < this.config.umid_min ){
         this.medicao.umid_status = "baixo"
         if(med.Umidade > 0){
-          this.executarNative('Umidade baixa')
+          this.executarNative('Umidade baixa', guarda)
         }
       } else {
         this.medicao.umid_status = ""
       }
+      this.startAnimaTempUmid()
     }
   }
 
@@ -210,7 +230,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
         } else {
           this.config = configRetorno;
         }
-        localStorage.setItem('configraspberry', JSON.stringify(this.config))
+        //localStorage.setItem('configraspberry', JSON.stringify(this.config))
       }
     }).catch(error => {
           if (error.error){
@@ -313,7 +333,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
         ]
       });
       */
-      this.executarNative('Testando')
+      this.executarNative('Testando', '1')
     },
     6000);
   }
@@ -334,41 +354,44 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
   }
 
 
-  async executarNative(descricao: string){
-    const alertaConfig = localStorage.getItem('alertaconfig') // se existir é pq o alerta está ativado
-    if (alertaConfig) {
-      if(alertaConfig == 'ativado'){
-        this.localNotifications.schedule({
-          id: 15,
-          title: 'Alerta da Estufa',
-          text: descricao,
-          foreground: true,
-          smallIcon: 'res://ic_launcher',
-          icon: 'res://ic_launcher',//'http://estufa.com/assets/icon/favicon.png',
-          actions: [
-            { id: 'silenciar', title: 'SILENCIAR' }
-          ]
-        });
-        this.vibration.vibrate([2000,2000,2000,2000,2000,2000,2000,2000,2000]);
-        this.nativeAudio.loop('uniqueId2');
-
-        const alert = await this.alertController.create({
-          cssClass: 'my-custom-class',
-          header: 'Alerta',
-          message: descricao,
-          buttons: [
-             {
-              text: 'SILENCIAR',
-              handler: () => {
-                console.log('Confirm Okay');
-                this.pararNative()
+  async executarNative(descricao: string, guarda: string){
+    if(guarda == '1'){
+      const configMod = localStorage.getItem('estufaapp')
+      ? JSON.parse(localStorage.getItem('estufaapp'))
+      : null;
+      if(configMod){
+        if(configMod.guarda == '1'){
+          this.localNotifications.schedule({
+            id: 15,
+            title: 'Alerta da Estufa',
+            text: descricao,
+            foreground: true,
+            smallIcon: 'res://ic_launcher',
+            icon: 'res://ic_launcher',//'http://estufa.com/assets/icon/favicon.png',
+            actions: [
+              { id: 'silenciar', title: 'SILENCIAR' }
+            ]
+          });
+          this.vibration.vibrate([2000,2000,2000,2000,2000,2000,2000,2000,2000]);
+          this.nativeAudio.loop('uniqueId2');
+          const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: 'Alerta',
+            message: descricao,
+            buttons: [
+                {
+                text: 'SILENCIAR',
+                handler: () => {
+                  console.log('Confirm Okay');
+                  this.pararNative()
+                }
               }
-            }
-          ]
-        });
-        await alert.present();
+            ]
+          });
+          await alert.present();
+        }
       }
-    }
+    }   
     //this.nativeAudio.play('uniqueId1', () => console.log('uniqueId1 is done playing'));
     //this.vibration.vibrate([2000,2000,2000]);
 /*

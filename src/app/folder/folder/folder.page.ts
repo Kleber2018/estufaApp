@@ -28,7 +28,7 @@ export class FolderPage implements OnInit, OnDestroy {
 
   public admin: boolean = false;
   
-  public configLocal: Config;
+  public configModulo: Config;
 
   public folder: string;
 
@@ -68,62 +68,54 @@ export class FolderPage implements OnInit, OnDestroy {
                     ) {
                       this.admin = false
 
-                     this.configLocal = {
-                        guarda: '0',
-                        vibrar: '1',
-                        toque: 'uniqueId1',
-                        modulos: [{
-                          identificacao: 'Estufa Primeira', //Estufa Amarela
-                          guarda: '0', // 1 / 0
-                          usuario: 'Kleber', // para login
-                          token: 'sssssssssss', // retornado pelo raspberry
-                          created: '',// data da criação
-                          ip: '127.0.0.1:5000', // 192.168.1.105:5000
-                          alertaParams:{
-                            id_config: 'default',
-                            intervalo_seconds: 60,
-                            obs: 'obs qualquer',
-                            temp_max: 99,
-                            temp_min: 90,
-                            umid_max: 23,
-                            umid_min: 14,
-                            updated: ''
-                          }
-                        }]
-                      }
+                      this.configModulo = localStorage.getItem('estufaapp')
+                      ? JSON.parse(localStorage.getItem('estufaapp'))
+                      : null;
+                  
 
-                      this.configLocal.modulos.push( {
-                        identificacao: 'Estufa Segunda', //Estufa Amarela
-                        guarda: '0', // 1 / 0
-                        usuario: 'Kleber', // para login
-                        token: 'sssssssssss', // retornado pelo raspberry
-                        created: '',// data da criação
-                        ip: '127.0.0.1:5000', // 192.168.1.105:5000
-                        alertaParams:{
-                          id_config: 'default',
-                          intervalo_seconds: 60,
-                          obs: 'obs qualquer2',
-                          temp_max: 99,
-                          temp_min: 50,
-                          umid_max: 30,
-                          umid_min: 14,
-                          updated: ''
+                      if(!this.configModulo){
+                        this.configModulo = {
+                          guarda: '0',
+                          vibrar: '1',
+                          toque: 'uniqueId1',
                         }
-                      })
-
-  
+                        localStorage.setItem('estufaapp', JSON.stringify(this.configModulo))
+                        this.carregaConfigTeste()
+                      }
+                      
      // set status bar to white
       //this.statusBar.backgroundColorByHexString('#339933');
-
- 
-    
-      const configLocal2 = localStorage.getItem('estufaapp')
-      if(configLocal2){
-        console.log(configLocal2)
-      }
   }
 
+ 
+
 ngOnInit() {
+}
+
+  carregaConfigTeste(){
+    this.configModulo = {
+      guarda: '1',
+      vibrar: '1',
+      toque: 'uniqueId1',
+      modulos: [{
+        identificacao: 'Estufa Primeira', //Estufa Amarela
+        guarda: '0', // 1 / 0
+        usuario: 'Kleber', // para login
+        token: 'sssssssssss', // retornado pelo raspberry
+        created: '',// data da criação
+        ip: '127.0.0.1:5000', // 192.168.1.105:5000
+      }]
+    }
+    this.configModulo.modulos.push( {
+      identificacao: 'Estufa Segunda', //Estufa Amarela
+      guarda: '0', // 1 / 0
+      usuario: 'Kleber', // para login
+      token: 'sssssssssss', // retornado pelo raspberry
+      created: '',// data da criação
+      ip: '127.0.0.1:5000', // 192.168.1.105:5000
+    })
+
+    localStorage.setItem('estufaapp', JSON.stringify(this.configModulo))
   }
 
 
