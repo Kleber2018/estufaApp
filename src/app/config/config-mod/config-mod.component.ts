@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {ConfigService} from "../config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { ModalController } from '@ionic/angular';
 
 import {ModalScanPage} from '../modal-scan/modal-scan.page'
@@ -25,10 +25,15 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         public alertaAtivado = false
     constructor(
         private formBuilder: FormBuilder,
+        private activatedRoute: ActivatedRoute,
         private configService: ConfigService,
         private router: Router,
         public modalController: ModalController
     ) {
+
+        if (this.activatedRoute.snapshot.params.id) {
+            
+        } // caso venha um id é UPDATE
         this.inicializar()
     }
 

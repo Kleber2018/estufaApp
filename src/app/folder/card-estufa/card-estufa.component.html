@@ -1,0 +1,92 @@
+<!--<header fxLayout="row" class="header header-true-{{disabled}}" fxLayoutAlign="space-between center">
+  <h1 class="headerTitle" fxLayoutAlign="start center">
+    <mat-icon>{{ iconName }}</mat-icon>
+    &nbsp;{{ title }}
+  </h1>
+  <mat-slide-toggle *ngIf="empresaStatus == 'Online'" (click)="alterarStatus(empresaId, '2-off')">{{empresaStatus}}</mat-slide-toggle> 
+
+    <p class="{{usuarioStatus}}">{{ usuarioStatus }}</p>
+  
+   <div *ngIf="presence$ | async as presence">
+   {{ this.usuarioStatus }}
+  </div> 
+
+</header>
+-->
+
+<ion-card>
+  <ion-item>
+    <ion-label>Estufa Nome</ion-label>
+    <ion-button color="light" slot="end" size="default" (click)="abrirConfigEstufa('1')"><ion-icon name="settings-outline"></ion-icon></ion-button>
+  </ion-item>
+  <ion-item class="ion-activated">
+      <ion-col>
+        <ion-row>
+          <ion-label class="txt-temp-umid">Temperatura</ion-label>
+        </ion-row>
+        <ion-row class='temp-umid-valor' #tempAnimation>
+          <ion-icon name="thermometer-outline"></ion-icon>
+          <ion-label>{{ medicao.temp }}</ion-label>
+          <ion-icon *ngIf="medicao.temp == 0" name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
+        </ion-row>
+        <ion-row >
+          <ion-label class="txt-temp-umid">{{medicao.temp_status}}</ion-label>
+        </ion-row>
+      </ion-col>
+      <ion-col>
+        <ion-row>
+          <ion-label class="txt-temp-umid">Umidade</ion-label>
+        </ion-row>
+        <ion-row class='temp-umid-valor' #umidAnimation>
+          <ion-icon name="water-outline"></ion-icon>
+          <ion-label>{{ medicao.umid }}</ion-label>
+          <ion-icon *ngIf="medicao.umid == 0" name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
+        </ion-row>
+        <ion-row>
+          <ion-label class="txt-temp-umid">{{medicao.umid_status}}</ion-label>
+        </ion-row>
+      </ion-col>
+  </ion-item>
+  <ion-row class="ion-justify-content-end">
+    {{medicao.createdAt}}
+  </ion-row>
+  <ion-row class="ion-justify-content-end" *ngIf="(medicao.umid == 0 && medicao.temp == 0)">
+    <ion-icon  name="warning-outline" color="warning" style="margin-left: 4px;"></ion-icon>
+    <ion-label>Erro de conexão</ion-label>
+  </ion-row>
+
+  <ion-item class="ion-activated ion-justify-content-center" >
+    <ion-col>
+      <ion-row class="ion-justify-content-center">
+        <ion-button color="light"  size="default"  *ngIf="alertaAtivado" (click)="desativarAlerta('1')"><ion-icon style="color: darkgreen;"  name="volume-high-outline"></ion-icon></ion-button>
+        <ion-button color="light" size="default" *ngIf="!alertaAtivado" (click)="ativarAlerta('1')"><ion-icon style="color: darkred;" name="volume-mute-outline"></ion-icon></ion-button>  
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-label *ngIf="alertaAtivado" style="color: darkgreen; font-size: small;">Ativado</ion-label>
+        <ion-label *ngIf="!alertaAtivado" style="color: darkred; font-size: small;">Desativado</ion-label>
+      </ion-row>
+      </ion-col>
+    <ion-col>
+      <ion-row class="ion-justify-content-center">
+        <ion-button color="light" size="default" (click)="abrirAlertasEstufa('1')"><ion-icon name="warning-outline" ></ion-icon></ion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-label style="font-size: small;">Alertas</ion-label>
+      </ion-row>
+    </ion-col>
+    <ion-col>
+      <ion-row class="ion-justify-content-center">
+        <ion-button color="light"  size="default" (click)="abrirMedicoesEstufa('1')" ><ion-icon name="bar-chart-outline" ></ion-icon></ion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-label style="font-size: small;">Medições</ion-label>
+      </ion-row>
+    </ion-col>
+  </ion-item>
+</ion-card>
+
+
+
+
+
+

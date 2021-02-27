@@ -20,11 +20,12 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { FolderPage } from './folder/folder/folder.page';
 import { CommonModule } from '@angular/common';
+import { CardEstufaComponent } from './folder/card-estufa/card-estufa.component';
 
 
 
 @NgModule({
-  declarations: [AppComponent, FolderPage],
+  declarations: [AppComponent, FolderPage, CardEstufaComponent],
   entryComponents: [],
   imports: [
     CommonModule,
@@ -48,6 +49,7 @@ import { CommonModule } from '@angular/common';
     PDFGenerator
     //Push
   ],
+  exports: [CardEstufaComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

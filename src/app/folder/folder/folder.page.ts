@@ -28,30 +28,7 @@ export class FolderPage implements OnInit, OnDestroy {
 
   public admin: boolean = false;
   public alertaAtivado = false;
-  public configLocal: Config = {
-    guarda: '',
-    vibrar: '',
-    toque: '',
-    modulos: [{
-      identificacao: '', //Estufa Amarela
-      guarda: '', // 1 / 0
-      usuario: '', // para login
-      token: '', // retornado pelo raspberry
-      created: '',// data da criação
-      ip: '', // 192.168.1.105:5000
-      alertaParams:{
-        id_config: '',
-        intervalo_seconds: 0,
-        obs: '',
-        temp_max: 0,
-        temp_min: 0,
-        umid_max: 0,
-        umid_min: 0,
-        updated: ''
-      }
-    }]
-
-  }
+  public configLocal: Config;
 
   public folder: string;
 
@@ -101,19 +78,50 @@ export class FolderPage implements OnInit, OnDestroy {
                     private pdfGenerator: PDFGenerator
                     ) {
                       this.admin = false
-                      /*
-    this.customPickerOptions = {
-      buttons: [{
-        text: 'Buscar',
-        handler: () => console.log('Clicked Save!')
-      }, {
-        text: 'Log',
-        handler: () => {
-          console.log('Clicked Log. Do not Dismiss.');
-          return false;
-        }
-      }]
-    }*/  
+
+                     this.configLocal = {
+                        guarda: '0',
+                        vibrar: '1',
+                        toque: 'uniqueId1',
+                        modulos: [{
+                          identificacao: 'Estufa Primeira', //Estufa Amarela
+                          guarda: '0', // 1 / 0
+                          usuario: 'Kleber', // para login
+                          token: 'sssssssssss', // retornado pelo raspberry
+                          created: '',// data da criação
+                          ip: '127.0.0.1:5000', // 192.168.1.105:5000
+                          alertaParams:{
+                            id_config: 'default',
+                            intervalo_seconds: 60,
+                            obs: 'obs qualquer',
+                            temp_max: 99,
+                            temp_min: 90,
+                            umid_max: 23,
+                            umid_min: 14,
+                            updated: ''
+                          }
+                        }]
+                      }
+
+                      this.configLocal.modulos.push( {
+                        identificacao: 'Estufa Segunda', //Estufa Amarela
+                        guarda: '0', // 1 / 0
+                        usuario: 'Kleber', // para login
+                        token: 'sssssssssss', // retornado pelo raspberry
+                        created: '',// data da criação
+                        ip: '127.0.0.1:5000', // 192.168.1.105:5000
+                        alertaParams:{
+                          id_config: 'default',
+                          intervalo_seconds: 60,
+                          obs: 'obs qualquer2',
+                          temp_max: 99,
+                          temp_min: 50,
+                          umid_max: 30,
+                          umid_min: 14,
+                          updated: ''
+                        }
+                      })
+
   
      // set status bar to white
       //this.statusBar.backgroundColorByHexString('#339933');
@@ -151,7 +159,10 @@ export class FolderPage implements OnInit, OnDestroy {
         
       });
     
-      
+      const configLocal2 = localStorage.getItem('estufaapp')
+      if(configLocal2){
+        console.log(configLocal2)
+      }
 
       //inicializando
       const apiURL = localStorage.getItem('ipraspberry')
