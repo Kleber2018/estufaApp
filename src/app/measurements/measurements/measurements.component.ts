@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MeasurementsService } from '../measurements.service';
+import { Config, Modulo } from 'src/app/shared/model/config.model';
 
 import { Chart } from 'chart.js';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
@@ -31,6 +32,8 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
     umid: 0,
     umid_status: '' //baixo, alto
   }
+
+  public dadosModulo : Modulo;
 
   customPickerOptions: any;
 
@@ -63,20 +66,34 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
         }
       }]
     }
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-    //range de dias
-    var intervaloDias = localStorage.getItem('intervaloDias')
-        ? JSON.parse(localStorage.getItem('intervaloDias'))
-        : null;
 
-    if (!intervaloDias) {
-      intervaloDias = 60
-    }
-    var d = new Date();
-    d.setDate(d.getDate() - intervaloDias);
-    this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-    this.formDataInic = new FormControl(this.dataInic, []);
-    this.buscarMedicoes(this.dataInic, this.dataFinal)
+
+    if (this.activatedRoute.snapshot.params.id) {
+      const configMod: Config = localStorage.getItem('estufaapp')
+          ? JSON.parse(localStorage.getItem('estufaapp'))
+          : null;
+      if(configMod){
+          this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
+          let interval = 60
+          if(this.dadosModulo.measurements){
+            if(this.dadosModulo.measurements.intervalo){
+              interval = this.dadosModulo.measurements.intervalo
+            }
+          }
+          var d = new Date();
+          d.setDate(d.getDate() - interval);
+          this.dataInic = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+          this.formDataInic = new FormControl(this.dataInic, []);
+          this.buscarMedicoes(this.dataInic, this.dataFinal, this.dadosModulo.ip)
+      }
+  }
+
+
+
+    //this.folder = this.activatedRoute.snapshot.paramMap.get('id');
+    //range de dias
+
+    
   }
 
 
@@ -84,11 +101,7 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
 
     
   selecionadoData(){
-    this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
-  }
-
-  ocultarMedicao(){
-    this.measurementsService.ocultarMedicao(11)
+    this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value, this.dadosModulo.ip)
   }
   
   public teste = 'testando'
@@ -107,8 +120,8 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
   }
 
 
-  async buscarMedicoes(dataI, dataF) {
-    this.medicoes = await this.measurementsService.getMedicoes(dataI, dataF, '0,0,0,0').then(medicoesRetorno => {
+  async buscarMedicoes(dataI, dataF, ip) {
+    this.medicoes = await this.measurementsService.getMedicoes(dataI, dataF, '0,0,1,1', ip).then(medicoesRetorno => {
       return medicoesRetorno
     }).catch(error => {
       console.log('Retornou Erro de Medições:', error);
@@ -187,8 +200,8 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
   }
 
   deletarMedicao(id: string){
-    this.measurementsService.ocultarMedicao(id).then( r => {
-      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
+    this.measurementsService.ocultarMedicao(id, this.dadosModulo.ip, this.dadosModulo.token).then( r => {
+      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value, this.dadosModulo.ip)
     })
   }
 
@@ -200,9 +213,12 @@ export class MeasurementsComponent implements OnInit, OnDestroy {
 
    //para fazer um refresh
   doRefresh(event) {
-    const apiURL = localStorage.getItem('ipraspberry')
-    if (apiURL) {
-      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value)
+    const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+    if(configMod){
+      this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
+      this.buscarMedicoes(this.formDataInic.value, this.formDataFinal.value, this.dadosModulo.ip)
     }
     setTimeout(() => {
       event.target.complete();

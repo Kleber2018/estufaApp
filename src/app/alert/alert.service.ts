@@ -12,29 +12,25 @@ export class AlertService {
   constructor(private http : HttpClient) { }
 
 
-  getAlertas(){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
+  getAlertas(ip){
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/json');
-    return this.http.get<any>('http://'+ this.apiURL+'/alertas',{headers: headers}).toPromise();
+    return this.http.get<any>('http://'+ ip+'/alertas',{headers: headers}).toPromise();
   }
 
-  getAlertasPeriodo(inicial, final){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
+  getAlertasPeriodo(inicial, final, ip){
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/json');
     const inicialSplit = inicial.split('T')
     const finalSplit = final.split('T')
-
-    //this.ocultarMedicoes([2,4])
-
     // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
     let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
-    return this.http.get<any>('http://'+ this.apiURL+'/alertasperiodo',{headers: headers, params: param}).toPromise();
+    return this.http.get<any>('http://'+ ip+'/alertasperiodo',{headers: headers, params: param}).toPromise();
+  }
+
+
+  silenciarAlertas(ip) {
+    return this.http.get<any>('http://'+ip+'/silenciaralertasapi',{headers: this.headers}).toPromise() ;
   }
 
 }

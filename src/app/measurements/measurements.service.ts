@@ -13,36 +13,29 @@ export class MeasurementsService {
       .set('Content-Type', 'application/json');
 
   constructor(private http : HttpClient) {
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
   }
 
  //retorna lista de todas as medições filtradas pela data e oculto
 // cod oculto se quiser todas é 0,1,2,3, somente com código 1 e 2 usar 1,1,2,2
-  getMedicoes(inicial, final, oculto){
-      if(localStorage.getItem('ipraspberry')){
-        this.apiURL = localStorage.getItem('ipraspberry')
-      }
-
+  getMedicoes(inicial, final, oculto, ip){
       const inicialSplit = inicial.split('T')
       const finalSplit = final.split('T')
 
     // let param: any = {datainicial: '2020-12-13', datafinal: '2020-12-20'};
       let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59', oculto: oculto};
-      return this.http.get<any>('http://'+this.apiURL+'/medicoes',{headers: this.headers, params: param}).toPromise();
+      return this.http.get<any>('http://'+ip+'/medicoes',{headers: this.headers, params: param}).toPromise();
   }
 
 
 
 
-  ocultarMedicao(id){
+  ocultarMedicao(id, ip, token){
     if(localStorage.getItem('ipraspberry')){
       this.apiURL = localStorage.getItem('ipraspberry')
     }
 
-    let param: any = {id: id};
+    let param: any = {id: id, token: token};
 
-    return this.http.get<any>('http://'+ this.apiURL+'/apiocultarmedicoes',{headers: this.headers, params: param}).toPromise();
+    return this.http.get<any>('http://'+ ip+'/apiocultarmedicoes',{headers: this.headers, params: param}).toPromise();
   }
 }

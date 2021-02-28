@@ -13,14 +13,9 @@ export interface Config {
     token?: string; // retornado pelo raspberry
     created?: any; // data da criação
     ip?: string; // 192.168.1.105:5000
-    alertaParams?:{
-      id_config?: string;
-      intervalo_seconds?: number;
-      obs?: string;
-      temp_max?: number;
-      temp_min?: number;
-      umid_max?: number;
-      umid_min?: number;
-      updated?: any
+    measurements?: {
+      intervalo?: number
+      data_inic?: any;
+      data_fim?: any;
     }
  }

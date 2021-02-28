@@ -120,16 +120,16 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
             1500);*/
    }
 
-   abrirConfigEstufa(id){
-    this.router.navigate([`/config/${id}`]);
+   abrirConfigEstufa(){
+    this.router.navigate([`/config/${this.positionArray}`]);
   }
 
-  abrirMedicoesEstufa(id){
-    this.router.navigate([`/measurements/${id}`]);
+  abrirMedicoesEstufa(){
+    this.router.navigate([`/measurements/${this.positionArray}`]);
   }
 
-  abrirAlertasEstufa(id){
-    this.router.navigate([`/alertas/${id}`]);
+  abrirAlertasEstufa(){
+    this.router.navigate([`/alertas/${this.positionArray}`]);
   }
 
   ativarAlerta(){

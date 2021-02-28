@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
 import { AlertConfigService } from '../alert-config.service';
@@ -21,9 +21,14 @@ export class AlertConfigComponent implements OnInit, OnDestroy {
   constructor(
       private formBuilder: FormBuilder,
       private alertConfigService: AlertConfigService,
-      private router: Router
+      private router: Router,
+      private activatedRoute: ActivatedRoute,
   ) {
     //this.inicializando()
+
+    if (this.activatedRoute.snapshot.params.id) {
+            
+    } // caso venha um id é UPDATE
     this.buildFormConfig()
   }
     
@@ -43,7 +48,7 @@ export class AlertConfigComponent implements OnInit, OnDestroy {
  
   //carregando com dados nulos para criar uma nova ocorrência
   private buildFormConfig(): void {
-      this.alertConfigService.getConfig().then(configRetorno => {
+      this.alertConfigService.getConfig('sss', 'sss').then(configRetorno => {
           console.log('Retornou /config', configRetorno);
           if(configRetorno){
               if(Array.isArray(configRetorno)){
