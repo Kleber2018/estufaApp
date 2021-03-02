@@ -11,7 +11,7 @@ import { ModalScanPage } from './modal-scan/modal-scan.page';
 @NgModule({
   declarations: [
     ConfigModComponent,     
-    ModalScanPage
+    //ModalScanPage
   ],
   imports: [
     CommonModule,

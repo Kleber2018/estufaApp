@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./config/config.module').then( m => m.ConfigModule)
   },
   {
+    path: 'config/:tipo',
+    loadChildren: () => import('./config/config.module').then( m => m.ConfigModule)
+  },
+  {
     path: 'alertas/:id',
     loadChildren: () => import('./alert/alert.module').then( m => m.AlertModule)
   },

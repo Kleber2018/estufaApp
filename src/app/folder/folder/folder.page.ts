@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FolderService} from "../folder.service";
 import {FormControl} from "@angular/forms";
 
-import { Animation, AnimationController, AlertController } from '@ionic/angular';
+import { Animation, AnimationController, AlertController, ModalController } from '@ionic/angular';
 import {  takeUntil } from 'rxjs/operators';
 
 
@@ -18,6 +18,7 @@ import { Subject, timer } from 'rxjs';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 import { Config } from 'src/app/shared/model/config.model';
+import { ModalScanPage } from 'src/app/config/modal-scan/modal-scan.page';
 
 @Component({
   selector: 'app-folder',
@@ -64,7 +65,8 @@ export class FolderPage implements OnInit, OnDestroy {
                     private router: Router,
                     private alertConfigService: AlertConfigService,
                     private localNotifications: LocalNotifications,
-                    private pdfGenerator: PDFGenerator
+                    private pdfGenerator: PDFGenerator,
+                    public modalController: ModalController
                     ) {
                       this.admin = false
 
@@ -175,6 +177,74 @@ ngOnInit() {
   habilitaDelete(status: boolean){
     this.admin = status
   }
+
+  async startInsert(){
+    console.log('start insert')
+    const modal = await this.modalController.create({
+        component: ModalScanPage,
+        componentProps: {
+            'IP': false
+        }
+        //cssClass: 'my-custom-class'
+    });
+    modal.present();
+    modal.onWillDismiss().then(data=>{
+        console.log('modal', data)
+        if(data){
+            if(data.data){
+                if(data.data.IP){
+                    var splitted = data.data.IP.split(".");
+                    //verifica se é um número
+                    if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
+                            var configMod: Config = localStorage.getItem('estufaapp')
+                                ? JSON.parse(localStorage.getItem('estufaapp'))
+                                : null;
+                            if(configMod){
+                                if(configMod.modulos){
+                                    configMod.modulos.push({
+                                        identificacao: `Estufa ${(configMod.modulos.length+1)}`, //Estufa Amarela
+                                        guarda: '0', // 1 / 0
+                                        usuario: '', // para login
+                                        token: '', // retornado pelo raspberry
+                                        created: '',// data da criação
+                                        ip:  data.data.IP, // 192.168.1.105:5000
+                                    })
+                                } else {
+                                    configMod.modulos = [{
+                                        identificacao: `Estufa 1`, //Estufa Amarela
+                                        guarda: '0', // 1 / 0
+                                        usuario: '', // para login
+                                        token: '', // retornado pelo raspberry
+                                        created: '',// data da criação
+                                        ip:  data.data.IP, // 192.168.1.105:5000
+                                    }]
+                                }
+                            } else {
+                                configMod = {
+                                    guarda: '0',
+                                    vibrar: '1',
+                                    toque: 'uniqueId1',
+                                    modulos: [{
+                                      identificacao: 'Estufa 1', //Estufa Amarela
+                                      guarda: '0', // 1 / 0
+                                      usuario: '', // para login
+                                      token: '', // retornado pelo raspberry
+                                      created: '',// data da criação
+                                      ip: data.data.IP, // 192.168.1.105:5000
+                                    }]
+                                  }
+                            }
+                            localStorage.setItem('estufaapp', JSON.stringify(configMod))
+                            this.ngOnDestroy()
+                            this.router.navigate([`/config/update/${(configMod.modulos.length-1)}`]);
+                        } 
+                       
+                } 
+          }
+        }
+    })
+}
+
 
  
   ngOnDestroy(): void {

@@ -20,10 +20,9 @@ export class ConfigModComponent implements OnInit, OnDestroy {
 
     public formIP: FormGroup;
     public config: Config;
-    
     public dadosModulo : Modulo;
+    public alertaAtivado = false
 
-        public alertaAtivado = false
     constructor(
         private formBuilder: FormBuilder,
         private activatedRoute: ActivatedRoute,
@@ -31,7 +30,13 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         private router: Router,
         public modalController: ModalController
     ) {
+      
+    }
+
+    ngOnInit() {
+        console.log('carregando configmod')
         if (this.activatedRoute.snapshot.params.tipo) {
+            console.log('teste', this.activatedRoute.snapshot.params.tipo)
             if (this.activatedRoute.snapshot.params.tipo == 'update') { //para atualizar as configurações de uma estufa
                 if (this.activatedRoute.snapshot.params.id) {
                     const configMod: Config = localStorage.getItem('estufaapp')
@@ -40,7 +45,6 @@ export class ConfigModComponent implements OnInit, OnDestroy {
                     if(configMod){
                         this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
                         //localStorage.setItem('estufaapp', JSON.stringify(configMod))
-                        this.inicializar(this.dadosModulo.ip)
                         if(this.dadosModulo.guarda == '1'){
                             this.alertaAtivado = true
                         } else {
@@ -48,26 +52,22 @@ export class ConfigModComponent implements OnInit, OnDestroy {
                         }
                     }
                 } 
-            } else {
-                console.log('insert')
+            } else { //insert de estufa
+                //this.startInsert()
             }
         }
     }
 
-    ngOnInit() {}
 
-
-    async inicializar(ip){
+    async validarIP(ip){
         const vr = await this.configService.validaIP(ip).then(r => {console.log('no then', r); return r})
         if(vr){
             console.log('encontrado')
         }
     }
 
-
     public datetimeDispositivo
     public datetimeCelular
-
     buscarDataRapsberry(){
         this.configService.getDateTimeRaspberry(this.dadosModulo.ip).then(r => {
             console.log(r);
@@ -85,6 +85,7 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         this.router.navigate([`/alert-config/${this.activatedRoute.snapshot.params.id}`]);
     }
 
+   
     desativarAlertas(){
         this.alertaAtivado = false
         const configMod: Config = localStorage.getItem('estufaapp')
@@ -151,7 +152,7 @@ export class ConfigModComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        console.log('onDestroy')
+        console.log('onDestroy config mod')
         this.end.next();
         this.end.complete();
     }

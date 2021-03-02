@@ -28,12 +28,17 @@ export class ModalScanPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('construtor do modal: ', this.IP)
-    var arrayIP = this.IP.split(':')
-    if(arrayIP.length >= 2){
-      this.buildFormIP(arrayIP[0], arrayIP[1])
+    if(this.IP){
+      var arrayIP = this.IP.split(':')
+      if(arrayIP.length >= 2){
+        this.buildFormIP(arrayIP[0], arrayIP[1])
+      } else {
+        this.buildFormIP(arrayIP[0], '5000')
+      }
     } else {
-      this.buildFormIP(arrayIP[0], '5000')
+      this.resetarIP()
     }
+   
 
   }
 
@@ -46,10 +51,12 @@ export class ModalScanPage implements OnInit, OnDestroy {
         'closed': false,
         'IP' : ipRetorno
       });
+      this.ngOnDestroy()
     } else {
       this.modalController.dismiss({
         'closed': true
       });
+      this.ngOnDestroy()
     }
     
   }
@@ -134,7 +141,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
         console.log('if', r)
         this.indexScan = 255
         this.dispositivosIp.push(r)
-        localStorage.setItem('ipraspberry', r+':5000')
+       // localStorage.setItem('ipraspberry', r+':5000')
       }
     }
   }
@@ -155,12 +162,10 @@ export class ModalScanPage implements OnInit, OnDestroy {
         }
       })
     }
-
     setTimeout(() => {
       this.scanDispositivo = false;
     },
     50000);
-
   }
 
   pararScanRede(){
@@ -169,7 +174,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('onDestroy')
+    console.log('onDestroy modal')
     this.end.next();
     this.end.complete();
   }
