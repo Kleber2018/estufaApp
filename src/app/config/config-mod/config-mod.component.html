@@ -36,8 +36,8 @@
           <ion-row>
             <ion-text>IP do medidor Raspberry na rede</ion-text>
           </ion-row>
-          <ion-row style="padding: 8px 0px;">
-            <ion-text>{{this.apiURL}}</ion-text>
+          <ion-row style="padding: 8px 0px;" *ngIf="dadosModulo">
+            <ion-text>{{this.dadosModulo.ip}}</ion-text>
           </ion-row>
           <ion-row>
             <ion-button color="warning" type="submit" (click)="IPModal()" >Alterar IP</ion-button>
@@ -61,7 +61,7 @@
         <ion-button color="success" expand="block" (click)="ativarAlertas()">Ativar Alertas</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 32px">
-        <ion-button color="tertiary" expand="block" [routerLink]="[ '/alert-config/identificacao']">Intervalo Alertas</ion-button>
+        <ion-button color="tertiary" expand="block" (click)="abrirAlertaConfig()">Intervalo Alertas</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 32px">
         <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>

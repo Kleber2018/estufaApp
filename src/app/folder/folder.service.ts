@@ -16,11 +16,10 @@ export class FolderService {
 
 
   // para ter a medição mais atualizada para mostrar no header
-  getMedicao(ip:string, token: string){
-   let param: any = {token: token};
+  getMedicao(ip:string, ){
+   //let param: any = {token: token};
     return this.http.get<any>('http://'+ ip +'/medicao',{headers: this.headers}).toPromise();
   }
-
 }
 
 

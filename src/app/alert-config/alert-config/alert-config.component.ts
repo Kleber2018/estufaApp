@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
 import { AlertConfigService } from '../alert-config.service';
-
+import { Config, Modulo } from 'src/app/shared/model/config.model';
 @Component({
   selector: 'app-alert-config',
   templateUrl: './alert-config.component.html',
@@ -16,7 +16,7 @@ export class AlertConfigComponent implements OnInit, OnDestroy {
 
   public formConfig: FormGroup;
   public config: any;
-  public apiURL
+  public dadosModulo : Modulo;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -27,29 +27,22 @@ export class AlertConfigComponent implements OnInit, OnDestroy {
     //this.inicializando()
 
     if (this.activatedRoute.snapshot.params.id) {
-            
-    } // caso venha um id é UPDATE
-    this.buildFormConfig()
+        const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+            this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
+            this.buildFormConfig(this.dadosModulo.ip)
+        }
+    } 
+
   }
     
   ngOnInit() {}
-
-  /*
-  async inicializando(){
-    const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
-    if(vr){
-
-        this.buildFormConfig()
-    } else {
-      localStorage.removeItem('ipraspberry')
-    }
-  }
-  */
  
   //carregando com dados nulos para criar uma nova ocorrência
-  private buildFormConfig(): void {
-      this.alertConfigService.getConfig('sss', 'sss').then(configRetorno => {
-          console.log('Retornou /config', configRetorno);
+  private buildFormConfig(ip: string): void {
+      this.alertConfigService.getConfig(ip).then(configRetorno => {
           if(configRetorno){
               if(Array.isArray(configRetorno)){
                   this.config = configRetorno[0];
@@ -150,27 +143,25 @@ export class AlertConfigComponent implements OnInit, OnDestroy {
     }
 
     submitConfig(){
-        console.log(this.formConfig.value)
-
-      this.alertConfigService.updateConfig({
+        this.alertConfigService.updateConfig({
                 intervalo_seconds: this.formConfig.value.intervalo_seconds,
                 temp_min: this.formConfig.value.temp_min,
                 temp_max: this.formConfig.value.temp_max,
                 umid_min: this.formConfig.value.umid_min,
                 umid_max: this.formConfig.value.umid_max,
                 obs: this.formConfig.value.obs
-            }).then(r => {
-          if(r){
-              if(r.retorno == 'salvo'){
-                  alert(r.retorno)
-                  this.buildFormConfig()
-              } else {
-                  alert('erro ao salvar: ' + r.retorno)
-              }
-          } else {
-              alert('erro ao salvar: ' + r.retorno)
-          }
-      })
+            }, this.dadosModulo.ip, this.dadosModulo.token).then(r => {
+                if(r){
+                    if(r.retorno == 'salvo'){
+                        alert(r.retorno)
+                        this.buildFormConfig(this.dadosModulo.ip)
+                    } else {
+                        alert('erro ao salvar: ' + r.retorno)
+                    }
+                } else {
+                    alert('erro ao salvar: ' + r.retorno)
+                }
+            })
     }
 
 

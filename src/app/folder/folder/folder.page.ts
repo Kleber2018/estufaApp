@@ -121,10 +121,9 @@ ngOnInit() {
 
   //para fazer um refresh
   doRefresh(event) {
-    const configLocal2 = localStorage.getItem('estufaapp')
-    if(configLocal2){
-      console.log(configLocal2) //carrega do localstorage
-    }
+    this.configModulo = localStorage.getItem('estufaapp')
+                          ? JSON.parse(localStorage.getItem('estufaapp'))
+                          : null;
     setTimeout(() => {
       event.target.complete();
     }, 400);

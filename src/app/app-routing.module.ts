@@ -24,7 +24,7 @@ const routes: Routes = [
     loadChildren: () => import('./alert-config/alert-config.module').then( m => m.AlertConfigModule)
   },
   {
-    path: 'config/:id',
+    path: 'config/:tipo/:id',
     loadChildren: () => import('./config/config.module').then( m => m.ConfigModule)
   },
   {

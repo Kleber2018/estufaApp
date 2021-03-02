@@ -91,9 +91,9 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
    }
 
    inicializar(dadosEstufa: Modulo){
-    this.buscaConfig(dadosEstufa.ip, dadosEstufa.token)
-    this.buscarMedicao(dadosEstufa.ip, dadosEstufa.token, dadosEstufa.guarda)
-    this.interval(dadosEstufa.ip, dadosEstufa.token, dadosEstufa.guarda)
+    this.buscaConfig(dadosEstufa.ip)
+    this.buscarMedicao(dadosEstufa.ip,  dadosEstufa.guarda)
+    this.interval(dadosEstufa.ip, dadosEstufa.guarda)
     this.notificacaoExecucao()
 
     if(this.dadosModulo.guarda == '1'){
@@ -121,7 +121,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
    }
 
    abrirConfigEstufa(){
-    this.router.navigate([`/config/${this.positionArray}`]);
+    this.router.navigate([`/config/update/${this.positionArray}`]);
   }
 
   abrirMedicoesEstufa(){
@@ -157,20 +157,20 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
 
 
   public timerSubscription
-  interval(ip: string, token: string, guarda: string) {
+  interval(ip: string, guarda: string) {
     const source = timer(30000, 60000);
     this.timerSubscription = source.pipe(takeUntil(this.end)).subscribe(t => { //Timer subscription é só uma variável pra que possa destruir o timer depois
       if( ((t+1) % 9) == 0 ){
-        this.buscaConfig(ip, token)
+        this.buscaConfig(ip)
       }
-      this.buscarMedicao(ip, token, guarda) // ele verifica se ainda está carregando pra poder fazer uma nova requisição
+      this.buscarMedicao(ip, guarda) // ele verifica se ainda está carregando pra poder fazer uma nova requisição
     });
   }
 
 
 
-  buscarMedicao(ip: string, token: string, guarda: string) {
-    this.folderService.getMedicao(ip, token).then(med => {
+  buscarMedicao(ip: string, guarda: string) {
+    this.folderService.getMedicao(ip).then(med => {
       this.buildViewMedicao(med[0], guarda)
       console.log(med[0])
     }).catch(error => {
@@ -222,8 +222,8 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
   }
 
 
-  buscaConfig(ip: string, token: string){
-    this.alertConfigService.getConfig(ip, token).then(configRetorno => {
+  buscaConfig(ip: string){
+    this.alertConfigService.getConfig(ip).then(configRetorno => {
       if(configRetorno){
         if(Array.isArray(configRetorno)){
           this.config = configRetorno[0];

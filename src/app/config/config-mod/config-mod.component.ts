@@ -5,8 +5,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { ModalController } from '@ionic/angular';
 
 import {ModalScanPage} from '../modal-scan/modal-scan.page'
-import { Config } from 'src/app/shared/model/config.model';
 import { Subject } from 'rxjs';
+import { Config, Modulo } from 'src/app/shared/model/config.model';
 
 @Component({
   selector: 'app-config-mod',
@@ -20,7 +20,8 @@ export class ConfigModComponent implements OnInit, OnDestroy {
 
     public formIP: FormGroup;
     public config: Config;
-    public apiURL
+    
+    public dadosModulo : Modulo;
 
         public alertaAtivado = false
     constructor(
@@ -30,30 +31,36 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         private router: Router,
         public modalController: ModalController
     ) {
-
-        if (this.activatedRoute.snapshot.params.id) {
-            
-        } // caso venha um id é UPDATE
-        this.inicializar()
+        if (this.activatedRoute.snapshot.params.tipo) {
+            if (this.activatedRoute.snapshot.params.tipo == 'update') { //para atualizar as configurações de uma estufa
+                if (this.activatedRoute.snapshot.params.id) {
+                    const configMod: Config = localStorage.getItem('estufaapp')
+                        ? JSON.parse(localStorage.getItem('estufaapp'))
+                        : null;
+                    if(configMod){
+                        this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
+                        //localStorage.setItem('estufaapp', JSON.stringify(configMod))
+                        this.inicializar(this.dadosModulo.ip)
+                        if(this.dadosModulo.guarda == '1'){
+                            this.alertaAtivado = true
+                        } else {
+                            this.alertaAtivado = false
+                        }
+                    }
+                } 
+            } else {
+                console.log('insert')
+            }
+        }
     }
 
     ngOnInit() {}
 
 
-    async inicializar(){
-        const alertaConfig = localStorage.getItem('alertaconfig')
-        if (alertaConfig) {
-            this.alertaAtivado = true
-        } else {
-            this.alertaAtivado = false
-        }
-
-        this.apiURL = localStorage.getItem('ipraspberry')
-        if(this.apiURL){
-        const vr = await this.configService.validaIP(this.apiURL).then(r => {console.log('no then', r); return r})
-            if(vr){
-                console.log('encontrado')
-            }
+    async inicializar(ip){
+        const vr = await this.configService.validaIP(ip).then(r => {console.log('no then', r); return r})
+        if(vr){
+            console.log('encontrado')
         }
     }
 
@@ -62,7 +69,7 @@ export class ConfigModComponent implements OnInit, OnDestroy {
     public datetimeCelular
 
     buscarDataRapsberry(){
-        this.configService.getDateTimeRaspberry().then(r => {
+        this.configService.getDateTimeRaspberry(this.dadosModulo.ip).then(r => {
             console.log(r);
             this.datetimeDispositivo = r
             this.datetimeCelular = new Date()
@@ -71,30 +78,46 @@ export class ConfigModComponent implements OnInit, OnDestroy {
 
     // atualizar a data do raspberry igual ao do dispositivo
     atualizarDataRaspberry(){
-        this.configService.setDateTimeRaspberry().then(r => console.log('retornou', r))
+        this.configService.setDateTimeRaspberry(this.dadosModulo.ip).then(r => console.log('retornou', r))
     }
 
-
+    abrirAlertaConfig(){
+        this.router.navigate([`/alert-config/${this.activatedRoute.snapshot.params.id}`]);
+    }
 
     desativarAlertas(){
-        localStorage.removeItem('alertaconfig')
         this.alertaAtivado = false
+        const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+          configMod.modulos[this.activatedRoute.snapshot.params.id].guarda = '0'
+          localStorage.setItem('estufaapp', JSON.stringify(configMod))
+        }
     }
 
     ativarAlertas(){
-        localStorage.setItem('alertaconfig', 'ativado')
         this.alertaAtivado = true
+        const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+          configMod.modulos[this.activatedRoute.snapshot.params.id].guarda = '1'
+          localStorage.setItem('estufaapp', JSON.stringify(configMod))
+        }
     }
 
     async IPModal() {
-        var ipLocal = '127.0.0.1:5000'
-        if(this.apiURL){
-            ipLocal = this.apiURL
+        const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+            this.dadosModulo =  configMod.modulos[this.activatedRoute.snapshot.params.id]
         }
         const modal = await this.modalController.create({
           component: ModalScanPage,
           componentProps: {
-            'IP': ipLocal
+            'IP': this.dadosModulo.ip
           }
           //cssClass: 'my-custom-class'
         });
@@ -108,10 +131,18 @@ export class ConfigModComponent implements OnInit, OnDestroy {
                         var splitted = data.data.IP.split(".");
                         //verifica se é um número
                         if(!isNaN(parseFloat(splitted[0])) && isFinite(splitted[0])){
-                           // localStorage.setItem('estufa', `${data.data.IP}:5000`)
-
-                            localStorage.setItem('ipraspberry', `${data.data.IP}`)
-                            this.router.navigate(['/folder']);
+                            if (this.activatedRoute.snapshot.params.tipo == 'update') {
+                                const configMod: Config = localStorage.getItem('estufaapp')
+                                    ? JSON.parse(localStorage.getItem('estufaapp'))
+                                    : null;
+                                if(configMod){
+                                    configMod.modulos[this.activatedRoute.snapshot.params.id].ip = data.data.IP
+                                    localStorage.setItem('estufaapp', JSON.stringify(configMod))
+                                    this.router.navigate(['/folder']);
+                                }
+                            } else {
+                                //montar lógica insert
+                            }
                         }   
                     }
                 }
@@ -124,7 +155,6 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         this.end.next();
         this.end.complete();
     }
-
 }
 
 

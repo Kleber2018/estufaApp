@@ -12,16 +12,13 @@ export class AlertConfigService {
 
   constructor(private http : HttpClient) { }
 
-  getConfig(ip: string, token: string){
+  getConfig(ip: string){
    // let param: any = {token: token};
     return this.http.get<any>('http://'+ ip+'/apiconfig',{headers: this.headers}).toPromise();
   }
 
-  updateConfig(configuracao: any){
-    if(localStorage.getItem('ipraspberry')){
-      this.apiURL = localStorage.getItem('ipraspberry')
-    }
-    //let param: any = {datainicial: inicialSplit[0]+' 00:01', datafinal: finalSplit[0]+' 23:59'};
-    return this.http.post<any>('http://'+ this.apiURL+'/apisalvarconfig',{headers: this.headers,  params: configuracao}).toPromise();
+  updateConfig(configuracao: any, ip: string, token: string){
+    let param: any = {token: token};
+    return this.http.post<any>('http://'+ ip +'/apisalvarconfig',{headers: this.headers,  params: configuracao}).toPromise();
   }
 }
