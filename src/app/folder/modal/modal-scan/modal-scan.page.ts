@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NetworkInterface } from '@ionic-native/network-interface/ngx';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Subject } from 'rxjs';
-import { ConfigService } from '../config.service';
+import { FolderService } from '../../folder.service';
 
 @Component({
   selector: 'app-modal-scan',
@@ -23,7 +23,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
   constructor(public modalController: ModalController,
     private formBuilder: FormBuilder,
     private networkInterface: NetworkInterface,
-    private configService: ConfigService,
+    private folderService: FolderService,
     public alertController: AlertController) {   }
 
   ngOnInit() {
@@ -96,7 +96,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
   }
 
   async submitIP(){
-    const r = await this.configService.validaDispositivo(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
+    const r = await this.folderService.validaDispositivo(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
     if(r){
       console.log('retornou do dispositvo', r)
       this.dismiss(`${this.formIP.value.ip}:${this.formIP.value.porta}`)
@@ -135,7 +135,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
     this.indexScan = 0
     for (this.indexScan; this.indexScan < 254; this.indexScan++) {
       console.log('http://'+ ip + '.' + this.indexScan + ':5000' + '/scan')
-      const r = await this.configService.validaDispositivo(ip + '.' + this.indexScan)
+      const r = await this.folderService.validaDispositivo(ip + '.' + this.indexScan)
       if(r){
         this.scanDispositivo = false
         console.log('if', r)
@@ -154,7 +154,7 @@ export class ModalScanPage implements OnInit, OnDestroy {
     this.indexScan = 0
     for (this.indexScan; this.indexScan < 254; this.indexScan++) {
       console.log('http://'+ ip + '.' + this.indexScan + ':5000' + '/scan')
-      this.configService.validaDispositivo(ip + '.' + this.indexScan+ ':' + this.formIP.value.porta).then( r => {
+      this.folderService.validaDispositivo(ip + '.' + this.indexScan+ ':' + this.formIP.value.porta).then( r => {
         console.log('asincrono ', r)
         if(r){
           console.log('if', r)

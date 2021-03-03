@@ -18,7 +18,8 @@ import { Subject, timer } from 'rxjs';
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 import { Config } from 'src/app/shared/model/config.model';
-import { ModalScanPage } from 'src/app/config/modal-scan/modal-scan.page';
+import { ModalScanPage } from '../modal/modal-scan/modal-scan.page';
+
 
 @Component({
   selector: 'app-folder',
@@ -122,13 +123,15 @@ ngOnInit() {
 
 
   //para fazer um refresh
-  doRefresh(event) {
+  doRefresh(event?) {
     this.configModulo = localStorage.getItem('estufaapp')
                           ? JSON.parse(localStorage.getItem('estufaapp'))
                           : null;
-    setTimeout(() => {
-      event.target.complete();
-    }, 400);
+    if(event){
+      setTimeout(() => {
+        event.target.complete();
+      }, 400);
+    }
   }
 
 
@@ -235,8 +238,9 @@ ngOnInit() {
                                   }
                             }
                             localStorage.setItem('estufaapp', JSON.stringify(configMod))
-                            this.ngOnDestroy()
-                            this.router.navigate([`/config/update/${(configMod.modulos.length-1)}`]);
+                            //this.ngOnDestroy()
+                            this.doRefresh()
+                           // this.router.navigate([`/config/update/${(configMod.modulos.length-1)}`]);
                         } 
                        
                 } 

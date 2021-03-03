@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ConfigService } from 'src/app/config/config.service';
 import { AlertConfigService } from '../alert-config.service';
 import { Config, Modulo } from 'src/app/shared/model/config.model';
 @Component({

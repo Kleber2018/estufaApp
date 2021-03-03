@@ -21,12 +21,13 @@ import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
 import { FolderPage } from './folder/folder/folder.page';
 import { CommonModule } from '@angular/common';
 import { CardEstufaComponent } from './folder/card-estufa/card-estufa.component';
-import { ModalScanPage } from './config/modal-scan/modal-scan.page';
+import { ConfigModComponent } from './folder/modal/config-mod/config-mod.component';
+import { ModalScanPage } from './folder/modal/modal-scan/modal-scan.page';
 
 
 
 @NgModule({
-  declarations: [AppComponent, FolderPage, CardEstufaComponent, ModalScanPage],
+  declarations: [AppComponent, FolderPage, CardEstufaComponent, ModalScanPage, ConfigModComponent],
   entryComponents: [],
   imports: [
     CommonModule,

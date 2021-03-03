@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {ConfigService} from "../../config/config.service";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
 import { ModalController } from '@ionic/angular';

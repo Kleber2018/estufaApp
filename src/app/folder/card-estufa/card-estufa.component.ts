@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { Animation, AnimationController, AlertController, Platform } from '@ionic/angular';
+import { Animation, AnimationController, AlertController, Platform, ModalController } from '@ionic/angular';
 import {  Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../folder.service';
+import { ConfigModComponent } from '../modal/config-mod/config-mod.component';
 
 
 @Component({
@@ -50,7 +51,8 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
               public alertController: AlertController,
               private router: Router,
               private alertConfigService: AlertConfigService,
-              private localNotifications: LocalNotifications) { 
+              private localNotifications: LocalNotifications,
+              public modalController: ModalController) { 
 
                       // The Native Audio plugin can only be called once the platform is ready
     this.localNotifications.requestPermission()
@@ -88,9 +90,9 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('dados dentro', this.dadosModulo, 'index', this.positionArray)
     this.inicializar(this.dadosModulo)
-   }
+  }
 
-   inicializar(dadosEstufa: Modulo){
+  inicializar(dadosEstufa: Modulo){
     this.buscaConfig(dadosEstufa.ip)
     this.buscarMedicao(dadosEstufa.ip,  dadosEstufa.guarda)
     this.interval(dadosEstufa.ip, dadosEstufa.guarda)
@@ -120,8 +122,31 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
             1500);*/
    }
 
-   abrirConfigEstufa(){
-    this.router.navigate([`/config/update/${this.positionArray}`]);
+  async abrirConfigEstufa(){
+    //this.router.navigate([`/config/update/${this.positionArray}`]);
+    console.log('start insert')
+    const modal = await this.modalController.create({
+        component: ConfigModComponent,
+        componentProps: {
+            'indexArray': this.positionArray,
+            'dadosModulo': this.dadosModulo
+        }
+        //cssClass: 'my-custom-class'
+    });
+    modal.present();
+    modal.onWillDismiss().then(data=>{
+        console.log('modal retorno do config', data)
+        if(data){
+            if(data.data){
+              if(data.data.return){
+                if(data.data.return == 'delete'){
+                  this.ngOnDestroy()
+                  window.location.reload() //força a atualização do app
+                }
+              } 
+          }
+        }
+    })
   }
 
   abrirMedicoesEstufa(){

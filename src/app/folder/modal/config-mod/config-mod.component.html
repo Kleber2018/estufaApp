@@ -1,10 +1,6 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <!-- <ion-title>{{ folder }}</ion-title>-->
-    <!-- <ion-button color="warning" (click)="fucaoteste()">Alertas</ion-button> -->
+    <ion-title *ngIf="dadosModulo">Configuração da Estufa {{dadosModulo.identificacao}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -67,7 +63,7 @@
         <ion-button color="light" expand="block" (click)="excluirModulo()">Excluir</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 32px">
-        <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
+        <ion-button color="tertiary" expand="block" (click)="dismiss()">Voltar</ion-button>
       </ion-row>
     </ion-content>
   </ion-content>
