@@ -23,11 +23,12 @@ import { CommonModule } from '@angular/common';
 import { CardEstufaComponent } from './folder/card-estufa/card-estufa.component';
 import { ConfigModComponent } from './folder/modal/config-mod/config-mod.component';
 import { ModalScanPage } from './folder/modal/modal-scan/modal-scan.page';
+import { Login } from './folder/modal/login/login.page';
 
 
 
 @NgModule({
-  declarations: [AppComponent, FolderPage, CardEstufaComponent, ModalScanPage, ConfigModComponent],
+  declarations: [AppComponent, FolderPage, CardEstufaComponent, ModalScanPage, ConfigModComponent, Login],
   entryComponents: [],
   imports: [
     CommonModule,

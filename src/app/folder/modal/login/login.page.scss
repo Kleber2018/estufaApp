@@ -1,0 +1,19 @@
+ion-content{
+     ion-item{
+         --background: rgba(255,255,255,0.75);
+         --border-radius: 10px;
+         ion-input{
+             --color: rgba(0,0,0,1);
+         }
+         ion-label{
+             --color: rgba(0,0,0,1);
+         }
+     }
+ }
+ 
+ page-home {
+     .error{
+       color: #ff0000;
+       font-size: 12px;
+     }
+ }

@@ -7,6 +7,7 @@ import {ModalScanPage} from '../modal-scan/modal-scan.page'
 import { Subject } from 'rxjs';
 import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../../folder.service';
+import { Login } from '../login/login.page';
 
 @Component({
   selector: 'app-config-mod',
@@ -163,6 +164,34 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         await alert.present();
     }
 
+    async login(){
+    const modal = await this.modalController.create({
+        component: Login,
+        componentProps: {
+            'IP': this.dadosModulo.ip
+        }
+        //cssClass: 'my-custom-class'
+        });
+        modal.present();
+        modal.onWillDismiss().then(data=>{
+            console.log('modal', data)
+            if(data){
+                if(data.data){
+                    if(data.data.token){
+                        const configMod: Config = localStorage.getItem('estufaapp')
+                            ? JSON.parse(localStorage.getItem('estufaapp'))
+                            : null;
+                        if(configMod){
+                            configMod.modulos[this.indexArray].token = data.data.token
+                            localStorage.setItem('estufaapp', JSON.stringify(configMod))
+                            this.dismiss('logado')
+                        }
+                    }
+                }
+            }
+        })  
+    }
+
     dismiss(retorno?) {
         console.log('dimiss',)
         // using the injected ModalController this page
@@ -180,7 +209,7 @@ export class ConfigModComponent implements OnInit, OnDestroy {
           this.ngOnDestroy()
         }
         
-      }
+    }
 
     ngOnDestroy(): void {
         console.log('onDestroy config mod')

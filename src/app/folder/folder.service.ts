@@ -63,6 +63,27 @@ export class FolderService {
     }
   }
 
+
+  async login(ip, user, senha){
+    let param: any = {user: user, senha: senha};
+    console.log('param', param)
+    const retorno = await this.http.get<any>('http://'+ ip + '/login', {headers: this.headers, params: param}).toPromise().then(r => {
+      return r
+    }).catch(erro => {
+      console.log(erro)
+    });
+
+    if (retorno) {
+      if (retorno.token) {
+        return retorno.token
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+
 /*
   async scanDispositivo(ipCompleto) {
     var ipArray = ipCompleto.ip.split('.')

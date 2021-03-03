@@ -135,17 +135,17 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
     });
     modal.present();
     modal.onWillDismiss().then(data=>{
-        console.log('modal retorno do config', data)
-        if(data){
-            if(data.data){
-              if(data.data.return){
-                if(data.data.return == 'delete'){
-                  this.ngOnDestroy()
-                  window.location.reload() //força a atualização do app
-                }
-              } 
+      console.log('modal retorno do config', data)
+      if(data){
+          if(data.data){
+            if(data.data.return){
+              if(data.data.return == 'delete' || data.data.return == 'logado'){
+                this.ngOnDestroy()
+                window.location.reload() //força a atualização do app
+              }
+            } 
           }
-        }
+      }
     })
   }
 
