@@ -151,6 +151,21 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         })
     }
 
+    excluirModulo(){
+
+
+        let configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+            configMod.modulos.splice(this.activatedRoute.snapshot.params.id, 1)
+            localStorage.setItem('estufaapp', JSON.stringify(configMod))
+            this.router.navigate(['/folder']);
+        }
+
+        
+    }
+
     ngOnDestroy(): void {
         console.log('onDestroy config mod')
         this.end.next();
