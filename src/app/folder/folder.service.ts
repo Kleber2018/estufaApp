@@ -65,9 +65,9 @@ export class FolderService {
 
 
   async login(ip, user, senha){
-    let param: any = {user: user, senha: senha};
-    console.log('param', param)
-    const retorno = await this.http.get<any>('http://'+ ip + '/login', {headers: this.headers, params: param}).toPromise().then(r => {
+    let body = JSON.stringify( {user: user, senha: senha})
+   // console.log('param', param)
+    const retorno = await this.http.post<any>('http://'+ ip + '/loginapi', body, {headers: this.headers}).toPromise().then(r => {
       return r
     }).catch(erro => {
       console.log(erro)
