@@ -94,6 +94,8 @@ export class Login implements OnInit, OnDestroy {
         if(r){
           if(r.token){
             this.dismiss(r.token)
+          } else if (r.erro) {
+            this.presentToast(r.erro)
           } else {
             this.presentToast("Usuário ou senha inválido")
           }
@@ -104,7 +106,6 @@ export class Login implements OnInit, OnDestroy {
         this.presentToast("Usuário ou senha inválido")
       })
     // this.authService.buscandoTipoProfissional(email.value);//buscando p profissional
-
    //  const login = this.loginForm.value;
      //this.authService.fazerLogin(login);//faz a busca de autenticação em auth.service.ts
      

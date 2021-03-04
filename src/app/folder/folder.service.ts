@@ -73,12 +73,9 @@ export class FolderService {
       console.log(erro)
     });
 
+    console.log('retornou ', retorno)
     if (retorno) {
-      if (retorno.token) {
-        return retorno.token
-      } else {
-        return false
-      }
+      return retorno
     } else {
       return false
     }

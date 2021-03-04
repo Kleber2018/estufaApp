@@ -54,8 +54,11 @@
         <ion-button color="danger" expand="block" (click)="desativarAlertas()">Desativar Alertas</ion-button>
       </ion-row>
 
-      <ion-row class="ion-justify-content-center" style="margin: 32px" >
+      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="dadosModulo.token == ''">
         <ion-button color="danger" expand="block" (click)="login()">Login</ion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="dadosModulo.token !== ''">
+        <ion-button color="danger" expand="block" (click)="logout()">Logout</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="!alertaAtivado">
         <ion-button color="success" expand="block" (click)="ativarAlertas()">Ativar Alertas</ion-button>

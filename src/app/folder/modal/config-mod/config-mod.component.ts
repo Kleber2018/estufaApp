@@ -165,11 +165,11 @@ export class ConfigModComponent implements OnInit, OnDestroy {
     }
 
     async login(){
-    const modal = await this.modalController.create({
-        component: Login,
-        componentProps: {
-            'IP': this.dadosModulo.ip
-        }
+        const modal = await this.modalController.create({
+            component: Login,
+            componentProps: {
+                'IP': this.dadosModulo.ip
+            }
         //cssClass: 'my-custom-class'
         });
         modal.present();
@@ -184,12 +184,24 @@ export class ConfigModComponent implements OnInit, OnDestroy {
                         if(configMod){
                             configMod.modulos[this.indexArray].token = data.data.token
                             localStorage.setItem('estufaapp', JSON.stringify(configMod))
+                            this.dadosModulo = configMod.modulos[this.indexArray]
                             this.dismiss('logado')
                         }
                     }
                 }
             }
         })  
+    }
+
+    async logout(){
+        const configMod: Config = localStorage.getItem('estufaapp')
+            ? JSON.parse(localStorage.getItem('estufaapp'))
+            : null;
+        if(configMod){
+            configMod.modulos[this.indexArray].token = ''
+            localStorage.setItem('estufaapp', JSON.stringify(configMod))
+            this.dadosModulo = configMod.modulos[this.indexArray]
+        }
     }
 
     dismiss(retorno?) {

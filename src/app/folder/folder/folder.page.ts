@@ -104,7 +104,7 @@ ngOnInit() {
         identificacao: 'Estufa Primeira', //Estufa Amarela
         guarda: '0', // 1 / 0
         usuario: 'Kleber', // para login
-        token: 'sssssssssss', // retornado pelo raspberry
+        token: '', // retornado pelo raspberry
         created: '',// data da criação
         ip: '127.0.0.1:5000', // 192.168.1.105:5000
       }]
@@ -113,7 +113,7 @@ ngOnInit() {
       identificacao: 'Estufa Segunda', //Estufa Amarela
       guarda: '0', // 1 / 0
       usuario: 'Kleber', // para login
-      token: 'sssssssssss', // retornado pelo raspberry
+      token: '', // retornado pelo raspberry
       created: '',// data da criação
       ip: '127.0.0.1:5000', // 192.168.1.105:5000
     })

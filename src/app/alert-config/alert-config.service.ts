@@ -18,7 +18,7 @@ export class AlertConfigService {
   }
 
   updateConfig(configuracao: any, ip: string, token: string){
-    let param: any = {token: token};
-    return this.http.post<any>('http://'+ ip +'/apisalvarconfig',{headers: this.headers,  params: configuracao}).toPromise();
+    let body = JSON.stringify( {token: token, config: configuracao})
+    return this.http.post<any>('http://'+ ip +'/apisalvarconfig', body ,{headers: this.headers}).toPromise();
   }
 }
