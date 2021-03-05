@@ -19,3 +19,17 @@ export interface Config {
       data_fim?: any;
     }
  }
+
+
+ 
+ export interface ConfigIntervalo {
+  id_config?: string; 
+  etapa?: string; 
+  intervalo_seconds?: string; 
+  temp_min?: string; 
+  temp_max?: string; 
+  umid_min?: string; 
+  umid_max?: string; 
+  updated?: any;  
+  obs?: string; 
+}

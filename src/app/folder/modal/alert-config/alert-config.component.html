@@ -29,6 +29,7 @@
             <ion-select-option value="Secagem da Folha">Secagem da Folha</ion-select-option>
             <ion-select-option value="Murchamento" >Murchamento</ion-select-option>
             <ion-select-option value="Amarelacao" >Amarelação</ion-select-option>
+            <ion-select-option value="default">Default</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-list>
@@ -84,10 +85,10 @@
       </ion-item>
 
       <ion-row class="ion-justify-content-center" style="margin: 8px">
-          <ion-button color="warning" type="submit" (click)="submitConfig()" [disabled]="(!formConfig.valid)">Salvar</ion-button>
+          <ion-button color="warning" type="submit" (click)="submitConfig()" [disabled]="(!formConfig.valid || !token)">Salvar</ion-button>
       </ion-row>
       <ion-row class="ion-justify-content-center" style="margin: 16px">
-        <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
+        <ion-button color="tertiary" expand="block" (click)="dismiss()">Voltar</ion-button>
       </ion-row>
 </ion-content>
 
@@ -103,7 +104,7 @@
     <ion-text>- Desative os dados móveis da operadora</ion-text>
   </ion-row>
   <ion-row class="ion-justify-content-center" style="margin: 16px">
-    <ion-button color="tertiary" expand="block" [routerLink]="[ '/folder']">Voltar</ion-button>
+    <ion-button color="tertiary" expand="block" (click)="dismiss()">Voltar</ion-button>
   </ion-row>
 
 </ion-content>

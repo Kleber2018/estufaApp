@@ -150,6 +150,17 @@ export class FolderService {
       return false
     }
   }
+
+
+  getConfig(ip: string){
+    // let param: any = {token: token};
+    return this.http.get<any>('http://'+ ip+'/apiconfig',{headers: this.headers}).toPromise();
+  }
+ 
+  updateConfig(configuracao: any, ip: string, token: string){
+    let body = JSON.stringify( {token: token, config: configuracao})
+    return this.http.post<any>('http://'+ ip +'/apisalvarconfig', body ,{headers: this.headers}).toPromise();
+  }
 }
 
 

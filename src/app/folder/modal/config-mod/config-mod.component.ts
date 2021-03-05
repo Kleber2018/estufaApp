@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../../folder.service';
 import { Login } from '../login/login.page';
+import { AlertConfigComponent } from '../alert-config/alert-config.component';
 
 @Component({
   selector: 'app-config-mod',
@@ -71,8 +72,29 @@ export class ConfigModComponent implements OnInit, OnDestroy {
         this.folderService.setDateTimeRaspberry(this.dadosModulo.ip).then(r => console.log('retornou', r))
     }
 
-    abrirAlertaConfig(){
-        this.router.navigate([`/alert-config/${this.indexArray}`]);
+    async abrirAlertaConfig(){
+        //this.router.navigate([`/alert-config/${this.indexArray}`]);
+        const modal = await this.modalController.create({
+                component: AlertConfigComponent,
+                componentProps: {
+                'IP': this.dadosModulo.ip,
+                'token' : this.dadosModulo.token
+            }
+            //cssClass: 'my-custom-class'
+        });
+        modal.present();
+        modal.onWillDismiss().then(data=>{
+            console.log('abrirAlertaConfig retorno ', data)
+            if(data){
+                if(data.data){
+                    if(data.data.return){
+                        if(data.data.return == 'salvo'){
+                            console.log('retorno')
+                        }
+                    }
+                }
+            }
+        })
     }
    
     desativarAlertas(){
@@ -220,7 +242,6 @@ export class ConfigModComponent implements OnInit, OnDestroy {
           });
           this.ngOnDestroy()
         }
-        
     }
 
     ngOnDestroy(): void {

@@ -7,7 +7,7 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
+
 import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../folder.service';
 import { ConfigModComponent } from '../modal/config-mod/config-mod.component';
@@ -50,7 +50,6 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
               private platform: Platform,
               public alertController: AlertController,
               private router: Router,
-              private alertConfigService: AlertConfigService,
               private localNotifications: LocalNotifications,
               public modalController: ModalController) { 
 
@@ -248,7 +247,7 @@ export class CardEstufaComponent implements OnInit, OnDestroy {
 
 
   buscaConfig(ip: string){
-    this.alertConfigService.getConfig(ip).then(configRetorno => {
+    this.folderService.getConfig(ip).then(configRetorno => {
       if(configRetorno){
         if(Array.isArray(configRetorno)){
           this.config = configRetorno[0];

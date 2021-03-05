@@ -16,7 +16,6 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Subject, timer } from 'rxjs';
 
 import { PDFGenerator } from '@ionic-native/pdf-generator/ngx';
-import { AlertConfigService } from 'src/app/alert-config/alert-config.service';
 import { Config } from 'src/app/shared/model/config.model';
 import { ModalScanPage } from '../modal/modal-scan/modal-scan.page';
 
@@ -57,15 +56,9 @@ export class FolderPage implements OnInit, OnDestroy {
  
 
   constructor(private activatedRoute: ActivatedRoute,
-                    private folderService: FolderService,
-                    private animationCtrl: AnimationController,
-                    private nativeAudio: NativeAudio,
-                    private vibration: Vibration,
                     private platform: Platform,
                     public alertController: AlertController,
                     private router: Router,
-                    private alertConfigService: AlertConfigService,
-                    private localNotifications: LocalNotifications,
                     private pdfGenerator: PDFGenerator,
                     public modalController: ModalController
                     ) {
