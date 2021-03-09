@@ -9,6 +9,7 @@ import { Config, Modulo } from 'src/app/shared/model/config.model';
 import { FolderService } from '../../folder.service';
 import { Login } from '../login/login.page';
 import { AlertConfigComponent } from '../alert-config/alert-config.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-config-mod',
@@ -41,6 +42,7 @@ export class ConfigModComponent implements OnInit, OnDestroy {
     ngOnInit() {
         console.log('teste', this.indexArray, this.dadosModulo)
         if(this.dadosModulo){
+            this.buscarDataRapsberry(this.dadosModulo.ip)
             if(this.dadosModulo.guarda == '1'){
                 this.alertaAtivado = true
             } else {
@@ -59,17 +61,40 @@ export class ConfigModComponent implements OnInit, OnDestroy {
 
     public datetimeDispositivo
     public datetimeCelular
-    buscarDataRapsberry(){
-        this.folderService.getDateTimeRaspberry(this.dadosModulo.ip).then(r => {
-            console.log(r);
-            this.datetimeDispositivo = r
+    public delay: string = '0'
+    buscarDataRapsberry(ip){
+        this.folderService.getDateTimeRaspberry(ip).then(r => {
+            this.datetimeDispositivo = new Date(r)
             this.datetimeCelular = new Date()
+            const now = moment(this.datetimeCelular); // Data de hoje
+            const past = moment(this.datetimeDispositivo); // Outra data no passado, "2021-03-01"
+            const duration = moment.duration(now.diff(past));
+            const days = duration.days();
+            const hours = duration.hours();
+            const min = duration.minutes()
+            if(days !== 0 || min !== 0){
+                this.delay = `Dias: ${duration.days()}, Minutos: ${duration.minutes()},`
+            }
         })
     }
 
     // atualizar a data do raspberry igual ao do dispositivo
     atualizarDataRaspberry(){
-        this.folderService.setDateTimeRaspberry(this.dadosModulo.ip).then(r => console.log('retornou', r))
+        this.folderService.setDateTimeRaspberry(this.dadosModulo.ip, this.dadosModulo.token).then(async r => {
+            const alert = await this.alertController.create({
+                header: 'Atualização Data Hora',
+                message: `Retornou ${r}`,
+                buttons: [
+                  {
+                    text: 'Ok',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                  }
+                ]
+              });
+          
+            await alert.present();
+            })
     }
 
     async abrirAlertaConfig(){

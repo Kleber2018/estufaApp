@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="dadosModulo">Configuração da Estufa {{dadosModulo.identificacao}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()" >
+        <ion-icon name="chevron-back-outline" style="font-size: 24px;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title style="padding: 0px; font-size: medium; margin-top: 4px;" *ngIf="dadosModulo">Configuração {{dadosModulo.identificacao}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -32,7 +37,7 @@
           <ion-row>
             <ion-text>IP do medidor Raspberry na rede</ion-text>
           </ion-row>
-          <ion-row style="padding: 8px 0px;" *ngIf="dadosModulo">
+          <ion-row style="padding: 6px 0px;" *ngIf="dadosModulo">
             <ion-text>{{this.dadosModulo.ip}}</ion-text>
           </ion-row>
           <ion-row>
@@ -40,39 +45,67 @@
           </ion-row> 
         </ion-grid>
       </ion-item-divider> 
-      <ion-row>
-        <ion-title size="large" style="padding: 4px 10px" *ngIf="datetimeCelular" >Celular: {{ datetimeCelular | date:'dd/MMM/yy - H:mm'}}</ion-title>
-      </ion-row>
-      <ion-row>
-        <ion-title size="large" style="padding: 4px 10px" *ngIf="datetimeDispositivo">Medidor: {{ datetimeDispositivo | date:'dd/MMM/yy - H:mm'}}</ion-title>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 16px;">
-        <ion-button color="secondary" expand="block" (click)="buscarDataRapsberry()">Verificar hora Medidor</ion-button>
-        <ion-button color="warning" expand="block" (click)="atualizarDataRaspberry()">Equiparar data hora</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="alertaAtivado">
-        <ion-button color="danger" expand="block" (click)="desativarAlertas()">Desativar Alertas</ion-button>
-      </ion-row>
 
-      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="dadosModulo.token == ''">
-        <ion-button color="danger" expand="block" (click)="login()">Login</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="dadosModulo.token !== ''">
-        <ion-button color="danger" expand="block" (click)="logout()">Logout</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px" *ngIf="!alertaAtivado">
-        <ion-button color="success" expand="block" (click)="ativarAlertas()">Ativar Alertas</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px">
-        <ion-button color="secondary" expand="block" (click)="abrirAlertaConfig()">Intervalo Alertas</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px">
-        <ion-button color="light" expand="block" (click)="excluirModulo()">Excluir</ion-button>
-      </ion-row>
-      <ion-row class="ion-justify-content-center" style="margin: 32px">
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-grid>
+          <ion-row>
+            <ion-text>Delay</ion-text>
+            <ion-text style="color: crimson;" *ngIf="delay !== '0'">:  {{delay}}</ion-text>
+            <ion-text style="color: darkgreen;" *ngIf="delay == '0'">:  {{delay}}</ion-text>
+          </ion-row>
+          <ion-row style="padding: 6px 0px 0px 0px;" >
+            <ion-text *ngIf="datetimeCelular">Celular: {{ datetimeCelular | date:'dd/MMM/yy - H:mm'}}</ion-text>
+          </ion-row>
+          <ion-row style="padding: 8px 0px;" >
+            <ion-text *ngIf="datetimeDispositivo">Medidor: {{ datetimeDispositivo | date:'dd/MMM/yy - H:mm'}}</ion-text>
+          </ion-row>
+          <ion-row>
+            <ion-button color="warning" type="submit" (click)="atualizarDataRaspberry()" >Equiparar data hora</ion-button>
+          </ion-row> 
+        </ion-grid>
+      </ion-item-divider> 
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-grid>
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;" *ngIf="alertaAtivado">
+            <ion-button color="danger" expand="block" (click)="desativarAlertas()">Desativar Alertas</ion-button>
+          </ion-row>
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;" *ngIf="!alertaAtivado">
+            <ion-button color="success" expand="block" (click)="ativarAlertas()">Ativar Alertas</ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider>
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-grid>
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;">
+            <ion-button color="secondary" expand="block" (click)="abrirAlertaConfig()">Intervalo Alertas</ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider>
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-grid>
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;" *ngIf="dadosModulo.token == ''">
+            <ion-button color="success" expand="block" (click)="login()">Login</ion-button>
+          </ion-row>
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;" *ngIf="dadosModulo.token !== ''">
+            <ion-button color="light" expand="block" (click)="logout()">Logout</ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider> 
+
+
+
+      <ion-item-divider style="margin: 8px 0px">
+        <ion-grid> 
+          <ion-row class="ion-justify-content-center" style="margin-block-end: 12px; margin-top: 4px;">
+            <ion-button color="light" expand="block" (click)="excluirModulo()">Excluir</ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider> 
+      
+      <ion-row class="ion-justify-content-center" style="margin-left: 16px; margin-block-end: 16px;">
         <ion-button color="tertiary" expand="block" (click)="dismiss()">Voltar</ion-button>
       </ion-row>
-    </ion-content>
+    </ion-content> 
   </ion-content>
 
 
